@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyFlow - Gestion Financière</title>
+
+    <!-- PWA Meta -->
+    <meta name="theme-color" content="#007AEF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MoneyFlow">
+
+    <style>
+        :root {
+            --theme-primary: #007AEF;
+            --theme-secondary: #00D4FF;
+            --theme-gradient: linear-gradient(135deg, #007AEF, #00D4FF);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .app-container {
+            max-width: 414px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(10px);
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 122, 239, 0.1);
+            overflow: hidden;
+        }
+
+        .app-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 25% 25%, rgba(0, 122, 239, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 212, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 10%, rgba(0, 122, 239, 0.05) 0%, transparent 60%),
+                radial-gradient(circle at 20% 90%, rgba(0, 212, 255, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 80% 30%, rgba(0, 122, 239, 0.04) 0%, transparent 70%);
+            filter: blur(25px);
+            animation: appGradientFlow 12s ease-in-out infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes appGradientFlow {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.6;
+            }
+            25% {
+                transform: scale(1.1) rotate(90deg);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.05) rotate(180deg);
+                opacity: 0.4;
+            }
+            75% {
+                transform: scale(1.15) rotate(270deg);
+                opacity: 0.7;
+            }
+        }
+
+        .app-container::after {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background:
+                radial-gradient(circle at 60% 20%, rgba(0, 122, 239, 0.03) 0%, transparent 30%),
+                radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.04) 0%, transparent 25%),
+                radial-gradient(circle at 80% 60%, rgba(0, 122, 239, 0.035) 0%, transparent 35%);
+            filter: blur(40px);
+            animation: appFloatingOrbs 18s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes appFloatingOrbs {
+            0% {
+                transform: translateX(-50px) translateY(-50px) rotate(0deg);
+            }
+            100% {
+                transform: translateX(50px) translateY(50px) rotate(360deg);
+            }
+        }
+
+        .header {
+            background: var(--theme-gradient);
+            color: white;
+            padding: 60px 20px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 255, 255, 0.05) 10px,
+                    rgba(255, 255, 255, 0.05) 20px);
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateX(-100px) translateY(-100px);
+            }
+            100% {
+                transform: translateX(100px) translateY(100px);
+            }
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .balance-amount-header {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 20px 0;
+            z-index: 10;
+            position: relative;
+        }
+
+        .balance-info {
+            font-size: 14px;
+            opacity: 0.9;
+            z-index: 10;
+            position: relative;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            margin: 0 20px;
+            border-radius: 15px;
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 8px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            color: #ccc;
+        }
+
+        .nav-tab.active {
+            background: var(--theme-gradient);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .content {
+            padding: 30px 20px;
+            min-height: 60vh;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page {
+            display: none;
+            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: rgba(30, 30, 30, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(51, 51, 51, 0.6);
+            transform: translateY(0);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--theme-primary);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card.animate-in {
+            animation: slideInUp 0.6s ease;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-carousel {
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            border-left: 4px solid var(--theme-primary);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            height: 120px;
+        }
+
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .carousel-slide h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: var(--theme-primary);
+            font-weight: 600;
+        }
+
+        .carousel-slide .main-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .carousel-slide .sub-value {
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        .carousel-progress {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .carousel-progress-bar {
+            height: 100%;
+            background: var(--theme-gradient);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .carousel-dot.active {
+            background: var(--theme-primary);
+            transform: scale(1.2);
+        }
+
+        .btn {
+            background: var(--theme-gradient);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #555, #666);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--theme-primary);
+            transform: translateY(-2px);
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--theme-primary);
+            margin-bottom: 5px;
+            word-break: break-all;
+            line-height: 1.2;
+        }
+
+        .stat-number.large-number {
+            font-size: 18px;
+        }
+
+        .stat-number.very-large-number {
+            font-size: 16px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #ccc;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #ccc;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(51, 51, 51, 0.8);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(42, 42, 42, 0.9);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--theme-primary);
+            background: rgba(30, 30, 30, 0.9);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0, 122, 239, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .transaction-item:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow:
+                0 6px 20px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .transaction-item.income {
+            border-left: 4px solid #00FF88;
+        }
+
+        .transaction-item.expense {
+            border-left: 4px solid #FF4757;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+            margin: 15px 0;
+        }
+
+        .calendar-day {
+            aspect-ratio: 0.8;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day:hover {
+            background: rgba(0, 122, 239, 0.3);
+            transform: scale(1.05);
+        }
+
+        .calendar-day.has-transaction {
+            background: rgba(0, 212, 255, 0.15);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(45deg, rgba(0, 122, 239, 0.4), rgba(0, 212, 255, 0.4));
+            border: 2px solid var(--theme-primary);
+            font-weight: 700;
+            color: white;
+        }
+
+        .calendar-day.future {
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .calendar-day.future:hover {
+            background: rgba(0, 255, 136, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .transaction-indicator {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 6px;
+            height: 6px;
+            background: #00D4FF;
+            border-radius: 50%;
+        }
+
+        .today-indicator {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 8px;
+            height: 8px;
+            background: #FF4757;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .fire-simulator-section {
+            background: linear-gradient(135deg, rgba(0, 122, 239, 0.1), rgba(0, 212, 255, 0.05));
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid rgba(0, 122, 239, 0.2);
+        }
+
+        .fire-result-card {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.1));
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .fire-result-card.speculative {
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.1), rgba(255, 71, 87, 0.1));
+            border: 1px solid rgba(255, 165, 0, 0.3);
+        }
+
+        .result-main {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .result-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00FF88, #00D4FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .fire-result-card.speculative .result-amount {
+            background: linear-gradient(45deg, #FFA500, #FF4757);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .result-details {
+            display: grid;
+            gap: 15px;
+        }
+
+        .progress-section {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--theme-gradient);
+            transition: width 0.3s ease;
+        }
+
+        .risk-warning {
+            background: rgba(255, 165, 0, 0.1);
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .saved-goals-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .fire-goal-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid;
+        }
+
+        .fire-goal-item.classic {
+            border-left-color: #00FF88;
+        }
+
+        .fire-goal-item.speculative {
+            border-left-color: #FFA500;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tab {
+                font-size: 9px;
+                padding: 12px 6px;
+            }
+
+            .header {
+                padding: 50px 15px 25px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .balance-amount-header {
+                font-size: 24px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="logo">💰 MoneyFlow</div>
+            <div class="balance-amount-header" id="headerBalance">€0</div>
+            <div class="balance-info" id="headerInfo">Gérez vos finances avec style</div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showPage('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="showPage('calendar')">📅 Calendrier</button>
+            <button class="nav-tab" onclick="showPage('tools')">🛠️ Outils</button>
+            <button class="nav-tab" onclick="showPage('portfolio')">📈 Actifs</button>
+            <button class="nav-tab" onclick="showPage('data')">💾 Données</button>
+        </div>
+
+        <div class="content">
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page active">
+                <div class="progress-carousel" id="progressCarouselSection" style="display: none;">
+                    <div class="carousel-container" id="carouselContainer"></div>
+                    <div class="carousel-indicators" id="carouselIndicators"></div>
+                </div>
+
+                <div class="card animate-in">
+                    <h3>💼 Aperçu Financier</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="currentBalance">€0</div>
+                            <div class="stat-label">Solde Actuel</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalAssets">€0</div>
+                            <div class="stat-label">Total Actifs</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalIncome" style="color: #00FF88;">€0</div>
+                            <div class="stat-label">Revenus Totaux</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalExpenses" style="color: #FF4757;">€0</div>
+                            <div class="stat-label">Dépenses Totales</div>
+                        </div>
+                    </div>
+
+                    <button class="btn" onclick="showModal('transactionModal')">+ Ajouter Transaction</button>
+                </div>
+
+                <div class="card animate-in">
+                    <h3>🎯 Objectifs FIRE</h3>
+                    <div id="fireGoalsSummary">
+                        <p style="text-align: center; color: #666;">Aucun objectif FIRE configuré</p>
+                    </div>
+                    <button class="btn" onclick="showPage('tools')">Configurer FIRE</button>
+                </div>
+
+                <div class="card animate-in">
+                    <h3>📅 Transactions Récentes</h3>
+                    <div id="recentTransactions"></div>
+                    <button class="btn btn-secondary" onclick="showPage('calendar')">Voir le Calendrier</button>
+                </div>
+            </div>
+
+            <!-- Calendrier -->
+            <div id="calendar" class="page">
+                <div class="card">
+                    <h3>📅 Calendrier Financier</h3>
+                    <button class="btn" onclick="showModal('transactionModal')">+ Ajouter Transaction</button>
+                    <button class="btn" onclick="showModal('recurringModal')">+ Ajouter Récurrent</button>
+                    <div id="calendarView"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Toutes les Transactions</h3>
+                    <div id="allTransactions"></div>
+                </div>
+            </div>
+
+            <!-- Outils -->
+            <div id="tools" class="page">
+                <div class="card">
+                    <h3>🛠️ Outils Financiers</h3>
+
+                    <div class="fire-simulator-section">
+                        <h4>🔹 FIRE Classique (Règle des 4%)</h4>
+                        <p style="opacity: 0.8; margin-bottom: 20px;">Capital stable, taux de retrait fixe sans croissance</p>
+                        <button class="btn" onclick="toggleFireForm('classic')">📊 Ouvrir le Simulateur</button>
+
+                        <div id="classicFireForm" style="display: none; margin-top: 20px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                                <div class="form-group">
+                                    <label class="form-label">Revenu mensuel souhaité (€)</label>
+                                    <input type="number" class="form-input" id="classicMonthlyIncome" placeholder="1500" value="1500">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Taux de retrait (%)</label>
+                                    <input type="number" class="form-input" id="classicWithdrawalRate" placeholder="4" value="4" step="0.1">
+                                </div>
+                            </div>
+                            <button class="btn" onclick="calculateClassicFire()">📊 Calculer</button>
+                        </div>
+
+                        <div id="classicFireResult" style="display: none;">
+                            <div class="fire-result-card">
+                                <div class="result-main">
+                                    <div class="result-amount" id="classicRequiredCapital">€0</div>
+                                    <p>Capital requis</p>
+                                </div>
+                                <div class="result-details">
+                                    <p><strong>📅 Revenu annuel:</strong> <span id="classicAnnualIncome">€0</span></p>
+                                    <p><strong>📉 Taux de retrait:</strong> <span id="classicWithdrawalDisplay">4%</span></p>
+                                    <div class="progress-section">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" id="classicProgress" style="width: 0%"></div>
+                                        </div>
+                                        <p><strong>Progression:</strong> <span id="classicProgressText">0%</span></p>
+                                    </div>
+                                    <button class="btn btn-secondary" onclick="saveClassicFireGoal()">💾 Sauver comme Objectif</button>
+                                    <button class="btn btn-secondary" onclick="resetClassicFire()" style="margin-top: 10px;">🔄 Réinitialiser</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fire-simulator-section">
+                        <h4>🔹 FIRE Spéculatif (Croissance Dynamique)</h4>
+                        <p style="opacity: 0.8; margin-bottom: 20px;">Capital en croissance, vivre des rendements uniquement</p>
+                        <button class="btn" onclick="toggleFireForm('speculative')">🚀 Ouvrir le Simulateur</button>
+
+                        <div id="speculativeFireForm" style="display: none; margin-top: 20px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                                <div class="form-group">
+                                    <label class="form-label">Revenu mensuel souhaité (€)</label>
+                                    <input type="number" class="form-input" id="speculativeMonthlyIncome" placeholder="1500" value="1500">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">CAGR estimé (%)</label>
+                                    <input type="number" class="form-input" id="speculativeCagr" placeholder="70" value="70" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Durée projetée (années)</label>
+                                    <input type="number" class="form-input" id="speculativeDuration" placeholder="30" value="30">
+                                </div>
+                            </div>
+                            <button class="btn" onclick="calculateSpeculativeFire()">🚀 Calculer</button>
+                        </div>
+
+                        <div id="speculativeFireResult" style="display: none;">
+                            <div class="fire-result-card speculative">
+                                <div class="result-main">
+                                    <div class="result-amount" id="speculativeRequiredCapital">€0</div>
+                                    <p>Capital requis</p>
+                                </div>
+                                <div class="result-details">
+                                    <p><strong>📅 Revenu annuel:</strong> <span id="speculativeAnnualIncome">€0</span></p>
+                                    <p><strong>📈 CAGR estimé:</strong> <span id="speculativeCagrDisplay">70%</span></p>
+                                    <p><strong>⏱️ Durée projetée:</strong> <span id="speculativeDurationDisplay">30 ans</span></p>
+                                    <div class="risk-warning">
+                                        <p>⚠️ <strong>Attention:</strong> Stratégie à haut risque adaptée aux investissements volatils (crypto, actions de croissance)</p>
+                                    </div>
+                                    <div class="progress-section">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" id="speculativeProgress" style="width: 0%"></div>
+                                        </div>
+                                        <p><strong>Progression:</strong> <span id="speculativeProgressText">0%</span></p>
+                                    </div>
+                                    <button class="btn btn-secondary" onclick="saveSpeculativeFireGoal()">💾 Sauver comme Objectif</button>
+                                    <button class="btn btn-secondary" onclick="resetSpeculativeFire()" style="margin-top: 10px;">🔄 Réinitialiser</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="saved-goals-section">
+                        <h3>🏆 Mes Objectifs FIRE</h3>
+                        <div id="fireGoalsList"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🧮 Simulateur d'Intérêts Composés</h3>
+                    <button class="btn" onclick="toggleCompoundForm()">📈 Ouvrir le Simulateur</button>
+
+                    <div id="compoundInterestForm" style="display: none; margin-top: 20px;">
+                        <div class="form-group">
+                            <label class="form-label">Montant initial (€)</label>
+                            <input type="number" class="form-input" id="initialAmount" placeholder="10000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Montant mensuel (€)</label>
+                            <input type="number" class="form-input" id="monthlyAmount" placeholder="500">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Taux annuel (%)</label>
+                            <input type="number" class="form-input" id="annualRate" placeholder="7" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Durée (années)</label>
+                            <input type="number" class="form-input" id="years" placeholder="20">
+                        </div>
+                        <button class="btn" onclick="calculateCompoundInterest()">Calculer</button>
+                    </div>
+
+                    <div id="simulationResults"></div>
+                </div>
+            </div>
+
+            <!-- Portefeuille Financier -->
+            <div id="portfolio" class="page">
+                <div class="card">
+                    <h3>📈 Portefeuille Financier</h3>
+                    <button class="btn" onclick="showModal('assetModal')">+ Ajouter Actif</button>
+
+                    <div class="stat-card" style="margin: 20px 0;">
+                        <div class="stat-number" id="portfolioTotal">€0</div>
+                        <div class="stat-label">Valeur totale des actifs</div>
+                    </div>
+
+                    <div id="assetsList"></div>
+                </div>
+            </div>
+
+            <!-- Gestion des Données -->
+            <div id="data" class="page">
+                <div class="card">
+                    <h3>💾 Gestion des Données</h3>
+                    <button class="btn" onclick="exportData()">📤 Exporter JSON</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Importer JSON</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                    <button class="btn btn-secondary" onclick="clearAllData()">🗑️ Effacer Toutes les Données</button>
+                    <div id="dataInfo"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideModal('transactionModal')">&times;</span>
+            <h3>Nouvelle Transaction</h3>
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label class="form-label">Nom</label>
+                    <input type="text" class="form-input" id="transactionName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Montant (€)</label>
+                    <input type="number" class="form-input" id="transactionAmount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-input" id="transactionType" required>
+                        <option value="income">Revenu</option>
+                        <option value="expense">Dépense</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Catégorie</label>
+                    <input type="text" class="form-input" id="transactionCategory">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-input" id="transactionDate" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Récurrent</label>
+                    <select class="form-input" id="transactionRecurring">
+                        <option value="no">Non</option>
+                        <option value="yes">Oui</option>
+                    </select>
+                </div>
+                <div class="form-group" id="recurringOptions" style="display: none;">
+                    <label class="form-label">Fréquence</label>
+                    <select class="form-input" id="recurringFrequency">
+                        <option value="monthly">Mensuelle</option>
+                        <option value="weekly">Hebdomadaire</option>
+                        <option value="yearly">Annuelle</option>
+                    </select>
+                </div>
+                <div class="form-group" id="recurringStartDateOptions" style="display: none;">
+                    <label class="form-label">Date de début</label>
+                    <input type="date" class="form-input" id="recurringStartDate">
+                </div>
+                <div class="form-group" id="recurringEndDateOptions" style="display: none;">
+                    <label class="form-label">Date de fin (optionnelle)</label>
+                    <input type="date" class="form-input" id="recurringEndDate">
+                </div>
+                <button type="submit" class="btn">Ajouter</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="recurringModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideModal('recurringModal')">&times;</span>
+            <h3>Transaction Récurrente</h3>
+            <form id="recurringForm">
+                <div class="form-group">
+                    <label class="form-label">Nom</label>
+                    <input type="text" class="form-input" id="recurringName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Montant (€)</label>
+                    <input type="number" class="form-input" id="recurringAmount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Type</label>
+                    <select class="form-input" id="recurringType" required>
+                        <option value="income">Revenu</option>
+                        <option value="expense">Dépense</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fréquence</label>
+                    <select class="form-input" id="recurringFrequency" required>
+                        <option value="monthly">Mensuelle</option>
+                        <option value="weekly">Hebdomadaire</option>
+                        <option value="yearly">Annuelle</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date de début</label>
+                    <input type="date" class="form-input" id="recurringStartDate" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date de fin (optionnelle)</label>
+                    <input type="date" class="form-input" id="recurringEndDate">
+                </div>
+                <button type="submit" class="btn">Ajouter</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="dateDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideModal('dateDetailsModal')">&times;</span>
+            <h3 id="dateDetailsTitle">Transactions du jour</h3>
+            <div id="dateTransactionsList"></div>
+            <button class="btn" onclick="addTransactionForDate()" style="margin-top: 15px;">+ Ajouter une transaction</button>
+        </div>
+    </div>
+
+    <div id="assetModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideModal('assetModal')">&times;</span>
+            <h3>Nouvel Actif</h3>
+            <form id="assetForm">
+                <div class="form-group">
+                    <label class="form-label">Nom</label>
+                    <input type="text" class="form-input" id="assetName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Quantité</label>
+                    <input type="number" class="form-input" id="assetQuantity" step="0.00000001" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Prix unitaire (€)</label>
+                    <input type="number" class="form-input" id="assetPrice" step="0.01" required>
+                </div>
+                <button type="submit" class="btn">Ajouter</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let appData = {
+            transactions: [],
+            recurring: [],
+            assets: [],
+            fireGoals: [],
+            settings: {
+                currentBalance: 0
+            }
+        };
+
+        let currentCalendarDate = new Date();
+        let carouselIndex = 0;
+        let carouselInterval = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            updateDisplay();
+            setTodayDate();
+            updateCarousel();
+            startCarousel();
+            setupEventListeners();
+
+            setTimeout(() => {
+                document.querySelectorAll('.card').forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('animate-in');
+                    }, index * 100);
+                });
+            }, 100);
+        });
+
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            const transactionDate = document.getElementById('transactionDate');
+            const recurringStartDate = document.getElementById('recurringStartDate');
+            if (transactionDate) transactionDate.value = today;
+            if (recurringStartDate) recurringStartDate.value = today;
+        }
+
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
+                page.classList.remove('active');
+            });
+
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            const targetPage = document.getElementById(pageName);
+            if (targetPage) {
+                targetPage.style.display = 'block';
+                targetPage.classList.add('active');
+            }
+
+            const activeTab = Array.from(document.querySelectorAll('.nav-tab')).find(tab => tab.getAttribute('onclick').includes(pageName));
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+
+            if (pageName === 'calendar') {
+                generateCalendar();
+                displayAllTransactions();
+            } else if (pageName === 'portfolio') {
+                displayAssets();
+            } else if (pageName === 'tools') {
+                displayFireGoals();
+            } else if (pageName === 'dashboard') {
+                updateCarousel();
+                startCarousel();
+                displayRecentTransactions();
+            } else {
+                stopCarousel();
+            }
+        }
+
+        function generateCarouselSlides() {
+            const slides = [];
+
+            const thisMonth = new Date().getMonth();
+            const thisYear = new Date().getFullYear();
+            const monthlyTransactions = appData.transactions.filter(t => {
+                const tDate = new Date(t.date);
+                return tDate.getMonth() === thisMonth && tDate.getFullYear() === thisYear;
+            });
+
+            let monthlyBalance = 0;
+            monthlyTransactions.forEach(t => {
+                monthlyBalance += t.type === 'income' ? t.amount : -t.amount;
+            });
+
+            slides.push({
+                title: "Progression ce mois",
+                mainValue: `${monthlyBalance >= 0 ? '+' : ''}€${Math.abs(monthlyBalance).toLocaleString()}`,
+                subValue: `${monthlyTransactions.length} transactions`,
+                progress: null
+            });
+
+            const totalAssets = calculateTotalAssets();
+            slides.push({
+                title: "Portefeuille financier",
+                mainValue: `€${totalAssets.toLocaleString()}`,
+                subValue: `${appData.assets.length} actifs`,
+                progress: null
+            });
+
+            if (appData.fireGoals && appData.fireGoals.length > 0) {
+                const currentAssets = calculateTotalAssets();
+                appData.fireGoals.slice(0, 3).forEach(goal => {
+                    const progress = Math.min((currentAssets / goal.requiredCapital) * 100, 100);
+                    slides.push({
+                        title: goal.name,
+                        mainValue: `${progress.toFixed(1)}%`,
+                        subValue: `€${currentAssets.toLocaleString()} / €${goal.requiredCapital.toLocaleString()}`,
+                        progress: progress
+                    });
+                });
+            }
+
+            return slides;
+        }
+
+        function updateCarousel() {
+            const slides = generateCarouselSlides();
+            const container = document.getElementById('carouselContainer');
+            const indicators = document.getElementById('carouselIndicators');
+            const carouselSection = document.getElementById('progressCarouselSection');
+
+            if (!container || !indicators || !carouselSection) return;
+
+            if (slides.length <= 1 && appData.transactions.length === 0) {
+                carouselSection.style.display = 'none';
+                return;
+            }
+
+            carouselSection.style.display = 'block';
+
+            container.innerHTML = slides.map(slide => `
+                <div class="carousel-slide">
+                    <h4>${slide.title}</h4>
+                    <div class="main-value">${slide.mainValue}</div>
+                    <div class="sub-value">${slide.subValue}</div>
+                    ${slide.progress !== null ? `
+                        <div class="carousel-progress">
+                            <div class="carousel-progress-bar" style="width: ${slide.progress}%"></div>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+
+            indicators.innerHTML = slides.map((_, index) => `
+                <div class="carousel-dot ${index === carouselIndex ? 'active' : ''}" onclick="goToSlide(${index})"></div>
+            `).join('');
+
+            container.style.transform = `translateX(-${carouselIndex * 100}%)`;
+        }
+
+        function nextSlide() {
+            const slides = generateCarouselSlides();
+            if (slides.length > 1) {
+                carouselIndex = (carouselIndex + 1) % slides.length;
+                updateCarousel();
+            }
+        }
+
+        function goToSlide(index) {
+            carouselIndex = index;
+            updateCarousel();
+        }
+
+        function startCarousel() {
+            stopCarousel();
+            carouselInterval = setInterval(nextSlide, 4000);
+        }
+
+        function stopCarousel() {
+            if (carouselInterval) {
+                clearInterval(carouselInterval);
+                carouselInterval = null;
+            }
+        }
+
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'block';
+                setTimeout(() => {
+                    modal.style.opacity = '1';
+                }, 10);
+            }
+        }
+
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        function setupEventListeners() {
+            const transactionForm = document.getElementById('transactionForm');
+            if (transactionForm) {
+                transactionForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    addTransaction();
+                });
+            }
+
+            const recurringForm = document.getElementById('recurringForm');
+            if (recurringForm) {
+                recurringForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    addRecurring();
+                });
+            }
+
+            const assetForm = document.getElementById('assetForm');
+            if (assetForm) {
+                assetForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    addAsset();
+                });
+            }
+
+            const transactionRecurringSelect = document.getElementById('transactionRecurring');
+            if (transactionRecurringSelect) {
+                transactionRecurringSelect.addEventListener('change', function() {
+                    const recurringOptions = document.getElementById('recurringOptions');
+                    const recurringStartDateOptions = document.getElementById('recurringStartDateOptions');
+                    const recurringEndDateOptions = document.getElementById('recurringEndDateOptions');
+                    if (this.value === 'yes') {
+                        recurringOptions.style.display = 'block';
+                        recurringStartDateOptions.style.display = 'block';
+                        recurringEndDateOptions.style.display = 'block';
+                    } else {
+                        recurringOptions.style.display = 'none';
+                        recurringStartDateOptions.style.display = 'none';
+                        recurringEndDateOptions.style.display = 'none';
+                    }
+                });
+            }
+
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            });
+        }
+
+        function addTransaction() {
+            const transactionRecurring = document.getElementById('transactionRecurring').value;
+            if (transactionRecurring === 'yes') {
+                addRecurring();
+                return;
+            }
+
+            const transaction = {
+                id: Date.now(),
+                name: document.getElementById('transactionName').value,
+                amount: parseFloat(document.getElementById('transactionAmount').value),
+                type: document.getElementById('transactionType').value,
+                category: document.getElementById('transactionCategory').value,
+                date: document.getElementById('transactionDate').value
+            };
+
+            appData.transactions.push(transaction);
+            saveData();
+            updateDisplay();
+            hideModal('transactionModal');
+            document.getElementById('transactionForm').reset();
+            setTodayDate();
+            updateCarousel();
+
+            displayRecentTransactions();
+            displayAllTransactions();
+        }
+
+        function addRecurring() {
+            const recurring = {
+                id: Date.now(),
+                name: document.getElementById(transactionRecurring === 'yes' ? 'transactionName' : 'recurringName').value,
+                amount: parseFloat(document.getElementById(transactionRecurring === 'yes' ? 'transactionAmount' : 'recurringAmount').value),
+                type: document.getElementById(transactionRecurring === 'yes' ? 'transactionType' : 'recurringType').value,
+                frequency: document.getElementById('recurringFrequency').value,
+                startDate: document.getElementById(transactionRecurring === 'yes' ? 'recurringStartDate' : 'recurringStartDate').value,
+                endDate: document.getElementById(transactionRecurring === 'yes' ? 'recurringEndDate' : 'recurringEndDate').value || null
+            };
+
+            appData.recurring.push(recurring);
+            saveData();
+            generateCalendar();
+            displayRecurring();
+            updateDisplay();
+            hideModal(transactionRecurring === 'yes' ? 'transactionModal' : 'recurringModal');
+            document.getElementById(transactionRecurring === 'yes' ? 'transactionForm' : 'recurringForm').reset();
+            setTodayDate();
+        }
+
+        function addAsset() {
+            const asset = {
+                id: Date.now(),
+                name: document.getElementById('assetName').value,
+                quantity: parseFloat(document.getElementById('assetQuantity').value),
+                price: parseFloat(document.getElementById('assetPrice').value)
+            };
+
+            appData.assets.push(asset);
+            saveData();
+            displayAssets();
+            updateDisplay();
+            hideModal('assetModal');
+            document.getElementById('assetForm').reset();
+        }
+
+        function calculateCurrentBalance() {
+            let balance = appData.settings.currentBalance;
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+
+            appData.transactions.forEach(transaction => {
+                const transactionDate = new Date(transaction.date);
+                if (transactionDate <= today) {
+                    balance += transaction.type === 'income' ? transaction.amount : -transaction.amount;
+                }
+            });
+
+            appData.recurring.forEach(recurring => {
+                const startDate = new Date(recurring.startDate);
+                const endDate = recurring.endDate ? new Date(recurring.endDate) : new Date('2999-12-31');
+                if (startDate <= today) {
+                    let currentDate = new Date(startDate);
+                    while (currentDate <= today && currentDate <= endDate) {
+                        balance += recurring.type === 'income' ? recurring.amount : -recurring.amount;
+                        if (recurring.frequency === 'monthly') {
+                            currentDate.setMonth(currentDate.getMonth() + 1);
+                        } else if (recurring.frequency === 'weekly') {
+                            currentDate.setDate(currentDate.getDate() + 7);
+                        } else if (recurring.frequency === 'yearly') {
+                            currentDate.setFullYear(currentDate.getFullYear() + 1);
+                        }
+                    }
+                }
+            });
+
+            return balance;
+        }
+
+        function calculateTotalAssets() {
+            const cashBalance = calculateCurrentBalance();
+            const assetsValue = appData.assets.reduce((total, asset) => {
+                return total + (asset.quantity * asset.price);
+            }, 0);
+            return cashBalance + assetsValue;
+        }
+
+        function calculateTotalIncome() {
+            return appData.transactions
+                .filter(t => t.type === 'income')
+                .reduce((total, t) => total + t.amount, 0);
+        }
+
+        function calculateTotalExpenses() {
+            return appData.transactions
+                .filter(t => t.type === 'expense')
+                .reduce((total, t) => total + t.amount, 0);
+        }
+
+        function generateCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+
+            const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                               'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+
+            let calendarHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between; margin: 20px 0; padding: 0 10px;">
+                    <button class="btn btn-secondary" onclick="changeMonth(-1)" style="padding: 10px; margin: 0; width: 40px; height: 40px; border-radius: 50%; font-size: 18px;">
+                        ←
+                    </button>
+                    <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600;">
+                        ${monthNames[month]} ${year}
+                    </h3>
+                    <button class="btn btn-secondary" onclick="changeMonth(1)" style="padding: 10px; margin: 0; width: 40px; height: 40px; border-radius: 50%; font-size: 18px;">
+                        →
+                    </button>
+                </div>
+                <div class="calendar-grid">
+            `;
+
+            const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            dayNames.forEach(day => {
+                calendarHTML += `<div style="text-align: center; font-weight: bold; padding: 8px; color: rgba(255,255,255,0.7); font-size: 0.8rem;">${day}</div>`;
+            });
+
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                calendarHTML += '<div></div>';
+            }
+
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const hasTransaction = appData.transactions.some(t => t.date === dateStr) ||
+                                      appData.recurring.some(r => {
+                                          const startDate = new Date(r.startDate);
+                                          const endDate = r.endDate ? new Date(r.endDate) : new Date('2999-12-31');
+                                          const currentDate = new Date(dateStr);
+                                          return startDate <= currentDate && currentDate <= endDate;
+                                      });
+
+                const isToday = dateStr === todayStr;
+                const isFuture = new Date(dateStr) > today;
+
+                let dayClasses = 'calendar-day';
+                if (hasTransaction) dayClasses += ' has-transaction';
+                if (isToday) dayClasses += ' today';
+                if (isFuture) dayClasses += ' future';
+
+                calendarHTML += `<div class="${dayClasses}" onclick="selectDate('${dateStr}')" data-date="${dateStr}">
+                    ${day}
+                    ${hasTransaction ? '<div class="transaction-indicator"></div>' : ''}
+                    ${isToday ? '<div class="today-indicator"></div>' : ''}
+                </div>`;
+            }
+
+            calendarHTML += '</div>';
+
+            const monthBalance = calculateMonthBalance(year, month);
+            calendarHTML += `
+                <div style="text-align: center; margin-top: 20px; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 15px;">
+                    <div style="font-size: 1.2rem; font-weight: 600; color: ${monthBalance >= 0 ? '#00FF88' : '#FF4757'};">
+                        Solde fin ${monthNames[month]} : ${monthBalance >= 0 ? '+' : ''}€${monthBalance.toFixed(2)}
+                    </div>
+                    <div style="font-size: 0.9rem; opacity: 0.7; margin-top: 5px;">
+                        Solde cumulé depuis le début
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('calendarView').innerHTML = calendarHTML;
+        }
+
+        function calculateMonthBalance(year, month) {
+            let balance = appData.settings.currentBalance;
+
+            const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59, 999);
+
+            appData.transactions.forEach(transaction => {
+                const transactionDate = new Date(transaction.date);
+                if (transactionDate <= endOfMonth) {
+                    balance += transaction.type === 'income' ? transaction.amount : -transaction.amount;
+                }
+            });
+
+            appData.recurring.forEach(recurring => {
+                const startDate = new Date(recurring.startDate);
+                const endDate = recurring.endDate ? new Date(recurring.endDate) : new Date('2999-12-31');
+                if (startDate <= endOfMonth) {
+                    let currentDate = new Date(startDate);
+                    while (currentDate <= endOfMonth && currentDate <= endDate) {
+                        balance += recurring.type === 'income' ? recurring.amount : -recurring.amount;
+                        if (recurring.frequency === 'monthly') {
+                            currentDate.setMonth(currentDate.getMonth() + 1);
+                        } else if (recurring.frequency === 'weekly') {
+                            currentDate.setDate(currentDate.getDate() + 7);
+                        } else if (recurring.frequency === 'yearly') {
+                            currentDate.setFullYear(currentDate.getFullYear() + 1);
+                        }
+                    }
+                }
+            });
+
+            return balance;
+        }
+
+        function changeMonth(direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            generateCalendar();
+        }
+
+        function selectDate(dateStr) {
+            window.selectedDateForTransaction = dateStr;
+
+            const dayTransactions = appData.transactions.filter(t => t.date === dateStr);
+            const dayRecurringTransactions = appData.recurring.filter(r => {
+                const startDate = new Date(r.startDate);
+                const endDate = r.endDate ? new Date(r.endDate) : new Date('2999-12-31');
+                const currentDate = new Date(dateStr);
+                return startDate <= currentDate && currentDate <= endDate;
+            });
+
+            const selectedDate = new Date(dateStr);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            selectedDate.setHours(0, 0, 0, 0);
+
+            let dateLabel = dateStr;
+            if (selectedDate.getTime() === today.getTime()) {
+                dateLabel = `${dateStr} (Aujourd'hui)`;
+            } else if (selectedDate > today) {
+                dateLabel = `${dateStr} (Futur)`;
+            }
+
+            document.getElementById('dateDetailsTitle').textContent = `Transactions du ${dateLabel}`;
+
+            let html = '';
+            if (dayTransactions.length === 0 && dayRecurringTransactions.length === 0) {
+                html = '<p style="text-align: center; color: rgba(255,255,255,0.5); margin: 20px 0;">Aucune transaction pour cette date</p>';
+            } else {
+                dayTransactions.forEach(transaction => {
+                    const sign = transaction.type === 'income' ? '+' : '-';
+                    const color = transaction.type === 'income' ? '#00FF88' : '#FF4757';
+
+                    html += `
+                        <div class="transaction-item ${transaction.type}" style="margin-bottom: 10px;">
+                            <div>
+                                <strong>${transaction.name}</strong>
+                                <br><small>${transaction.category || 'Sans catégorie'}</small>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="color: ${color}; font-weight: bold; font-size: 1.2rem;">
+                                    ${sign}€${Math.abs(transaction.amount).toFixed(2)}
+                                </div>
+                                <button class="btn btn-secondary" onclick="deleteTransaction(${transaction.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                dayRecurringTransactions.forEach(recurring => {
+                    const sign = recurring.type === 'income' ? '+' : '-';
+                    const color = recurring.type === 'income' ? '#00FF88' : '#FF4757';
+
+                    html += `
+                        <div class="transaction-item ${recurring.type}" style="margin-bottom: 10px; background: rgba(0, 122, 239, 0.1);">
+                            <div>
+                                <strong>${recurring.name} (Récurrent)</strong>
+                                <br><small>${recurring.frequency}</small>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="color: ${color}; font-weight: bold; font-size: 1.2rem;">
+                                    ${sign}€${Math.abs(recurring.amount).toFixed(2)}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('dateTransactionsList').innerHTML = html;
+            showModal('dateDetailsModal');
+        }
+
+        function addTransactionForDate() {
+            if (window.selectedDateForTransaction) {
+                document.getElementById('transactionDate').value = window.selectedDateForTransaction;
+
+                const selectedDate = new Date(window.selectedDateForTransaction);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                selectedDate.setHours(0, 0, 0, 0);
+
+                const modalTitle = document.querySelector('#transactionModal h3');
+                if (selectedDate > today) {
+                    modalTitle.textContent = `📅 Planifier pour le ${window.selectedDateForTransaction}`;
+                    modalTitle.style.color = '#00FF88';
+                } else if (selectedDate.getTime() === today.getTime()) {
+                    modalTitle.textContent = `✨ Transaction d'aujourd'hui`;
+                    modalTitle.style.color = '#007AEF';
+                } else {
+                    modalTitle.textContent = `📝 Transaction du ${window.selectedDateForTransaction}`;
+                    modalTitle.style.color = '#FFF';
+                }
+            }
+
+            hideModal('dateDetailsModal');
+            showModal('transactionModal');
+        }
+
+        function displayRecentTransactions() {
+            let html = '';
+            const recentTransactions = appData.transactions
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+
+            if (recentTransactions.length === 0) {
+                html += '<p style="text-align: center; color: rgba(255,255,255,0.5); margin: 20px 0;">Aucune transaction enregistrée</p>';
+            } else {
+                recentTransactions.forEach(transaction => {
+                    const sign = transaction.type === 'income' ? '+' : '-';
+                    const color = transaction.type === 'income' ? '#00FF88' : '#FF4757';
+
+                    html += `
+                        <div class="transaction-item ${transaction.type}">
+                            <div>
+                                <strong>${transaction.name}</strong>
+                                <br><small>${transaction.date} - ${transaction.category || 'Sans catégorie'}</small>
+                            </div>
+                            <div style="color: ${color}; font-weight: bold; font-size: 1.2rem;">
+                                ${sign}€${Math.abs(transaction.amount).toFixed(2)}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            const container = document.getElementById('recentTransactions');
+            if (container) {
+                container.innerHTML = html;
+            }
+        }
+
+        function displayAllTransactions() {
+            let html = '';
+            const sortedTransactions = appData.transactions
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (sortedTransactions.length === 0) {
+                html += '<p style="text-align: center; color: rgba(255,255,255,0.5); margin: 20px 0;">Aucune transaction enregistrée</p>';
+            } else {
+                sortedTransactions.forEach(transaction => {
+                    const sign = transaction.type === 'income' ? '+' : '-';
+                    const color = transaction.type === 'income' ? '#00FF88' : '#FF4757';
+
+                    const transactionDate = new Date(transaction.date);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    transactionDate.setHours(0, 0, 0, 0);
+
+                    const isFuture = transactionDate > today;
+                    const isToday = transactionDate.getTime() === today.getTime();
+
+                    let dateLabel = transaction.date;
+                    if (isToday) {
+                        dateLabel = `${transaction.date} (Aujourd'hui)`;
+                    } else if (isFuture) {
+                        dateLabel = `${transaction.date} (Planifié)`;
+                    }
+
+                    html += `
+                        <div class="transaction-item ${transaction.type}" style="${isFuture ? 'opacity: 0.7; border-left-style: dashed;' : ''}">
+                            <div>
+                                <strong>${transaction.name}</strong>
+                                ${isFuture ? ' 📅' : ''}
+                                ${isToday ? ' ✨' : ''}
+                                <br><small>${dateLabel} - ${transaction.category || 'Sans catégorie'}</small>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="color: ${color}; font-weight: bold; font-size: 1.2rem;">
+                                    ${sign}€${Math.abs(transaction.amount).toFixed(2)}
+                                </div>
+                                <button class="btn btn-secondary" onclick="deleteTransaction(${transaction.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            const container = document.getElementById('allTransactions');
+            if (container) {
+                container.innerHTML = html;
+            }
+        }
+
+        function displayRecurring() {
+            let html = '';
+            appData.recurring.forEach(recurring => {
+                const sign = recurring.type === 'income' ? '+' : '-';
+                const color = recurring.type === 'income' ? '#00FF88' : '#FF4757';
+
+                html += `
+                    <div class="transaction-item" style="background: rgba(0, 122, 239, 0.1); border: 1px solid rgba(0, 122, 239, 0.3);">
+                        <div>
+                            <strong>${recurring.name}</strong>
+                            <br><small>${recurring.frequency} - ${recurring.startDate} ${recurring.endDate ? `à ${recurring.endDate}` : ''}</small>
+                        </div>
+                        <div>
+                            <div style="color: ${color}; font-weight: bold; font-size: 1.2rem;">
+                                ${sign}€${Math.abs(recurring.amount).toFixed(2)}
+                            </div>
+                            <button class="btn btn-secondary" onclick="deleteRecurring(${recurring.id})" style="padding: 8px 15px; margin: 5px 0 0 0; width: auto; font-size: 12px;">Supprimer</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('recurringList').innerHTML = html || '<p style="text-align: center; color: rgba(255,255,255,0.5);">Aucune transaction récurrente</p>';
+        }
+
+        function displayAssets() {
+            let html = '';
+            let totalValue = 0;
+
+            appData.assets.forEach(asset => {
+                const value = asset.quantity * asset.price;
+                totalValue += value;
+
+                html += `
+                    <div class="transaction-item">
+                        <div>
+                            <strong>${asset.name}</strong>
+                            <br><small>${asset.quantity} × €${asset.price.toFixed(2)}</small>
+                        </div>
+                        <div>
+                            <div style="color: var(--theme-primary); font-weight: bold; font-size: 1.2rem;">€${value.toFixed(2)}</div>
+                            <button class="btn btn-secondary" onclick="deleteAsset(${asset.id})" style="padding: 5px 10px; font-size: 12px; width: auto; margin: 5px 0 0 0;">Supprimer</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('assetsList').innerHTML = html || '<p style="text-align: center; color: rgba(255,255,255,0.5);">Aucun actif</p>';
+            document.getElementById('portfolioTotal').textContent = `€${totalValue.toFixed(2)}`;
+        }
+
+        function calculateClassicFire() {
+            const monthlyIncome = parseFloat(document.getElementById('classicMonthlyIncome').value) || 0;
+            const withdrawalRate = parseFloat(document.getElementById('classicWithdrawalRate').value) / 100 || 0.04;
+
+            if (monthlyIncome <= 0 || withdrawalRate <= 0) {
+                alert('Veuillez entrer des valeurs valides');
+                return;
+            }
+
+            const annualIncome = monthlyIncome * 12;
+            const requiredCapital = annualIncome / withdrawalRate;
+            const currentAssets = calculateTotalAssets();
+            const progress = (currentAssets / requiredCapital) * 100;
+
+            document.getElementById('classicRequiredCapital').textContent = `€${requiredCapital.toLocaleString()}`;
+            document.getElementById('classicAnnualIncome').textContent = `€${annualIncome.toLocaleString()}`;
+            document.getElementById('classicWithdrawalDisplay').textContent = `${(withdrawalRate * 100).toFixed(1)}%`;
+            document.getElementById('classicProgress').style.width = `${Math.min(progress, 100)}%`;
+            document.getElementById('classicProgressText').textContent = `${progress.toFixed(1)}% (€${currentAssets.toLocaleString()})`;
+
+            document.getElementById('classicFireResult').style.display = 'block';
+
+            window.currentClassicResult = {
+                type: 'classic',
+                monthlyIncome,
+                withdrawalRate: withdrawalRate * 100,
+                requiredCapital,
+                annualIncome
+            };
+        }
+
+        function calculateSpeculativeFire() {
+            const monthlyIncome = parseFloat(document.getElementById('speculativeMonthlyIncome').value) || 0;
+            const cagr = parseFloat(document.getElementById('speculativeCagr').value) / 100 || 0.07;
+            const duration = parseFloat(document.getElementById('speculativeDuration').value) || 30;
+
+            if (monthlyIncome <= 0 || cagr <= 0) {
+                alert('Veuillez entrer des valeurs valides');
+                return;
+            }
+
+            const annualIncome = monthlyIncome * 12;
+            const requiredCapital = annualIncome / cagr;
+            const currentAssets = calculateTotalAssets();
+            const progress = (currentAssets / requiredCapital) * 100;
+
+            document.getElementById('speculativeRequiredCapital').textContent = `€${requiredCapital.toLocaleString()}`;
+            document.getElementById('speculativeAnnualIncome').textContent = `€${annualIncome.toLocaleString()}`;
+            document.getElementById('speculativeCagrDisplay').textContent = `${(cagr * 100).toFixed(1)}%`;
+            document.getElementById('speculativeDurationDisplay').textContent = `${duration} ans`;
+            document.getElementById('speculativeProgress').style.width = `${Math.min(progress, 100)}%`;
+            document.getElementById('speculativeProgressText').textContent = `${progress.toFixed(1)}% (€${currentAssets.toLocaleString()})`;
+
+            document.getElementById('speculativeFireResult').style.display = 'block';
+
+            window.currentSpeculativeResult = {
+                type: 'speculative',
+                monthlyIncome,
+                cagr: cagr * 100,
+                duration,
+                requiredCapital,
+                annualIncome
+            };
+        }
+
+        function saveClassicFireGoal() {
+            if (!window.currentClassicResult) {
+                alert('Veuillez d\'abord calculer votre simulation');
+                return;
+            }
+
+            const name = prompt('Nom de cet objectif FIRE:', `FIRE Classique - €${window.currentClassicResult.monthlyIncome}/mois`);
+            if (!name) return;
+
+            const goal = {
+                id: Date.now(),
+                name: name,
+                ...window.currentClassicResult,
+                createdDate: new Date().toISOString().split('T')[0]
+            };
+
+            if (!appData.fireGoals) appData.fireGoals = [];
+            appData.fireGoals.push(goal);
+            saveData();
+            displayFireGoals();
+            updateCarousel();
+            alert('Objectif FIRE sauvegardé !');
+        }
+
+        function saveSpeculativeFireGoal() {
+            if (!window.currentSpeculativeResult) {
+                alert('Veuillez d\'abord calculer votre simulation');
+                return;
+            }
+
+            const name = prompt('Nom de cet objectif FIRE:', `FIRE Spéculatif - €${window.currentSpeculativeResult.monthlyIncome}/mois`);
+            if (!name) return;
+
+            const goal = {
+                id: Date.now(),
+                name: name,
+                ...window.currentSpeculativeResult,
+                createdDate: new Date().toISOString().split('T')[0]
+            };
+
+            if (!appData.fireGoals) appData.fireGoals = [];
+            appData.fireGoals.push(goal);
+            saveData();
+            displayFireGoals();
+            updateCarousel();
+            alert('Objectif FIRE sauvegardé !');
+        }
+
+        function displayFireGoals() {
+            if (!appData.fireGoals) appData.fireGoals = [];
+
+            let html = '';
+            const currentAssets = calculateTotalAssets();
+
+            appData.fireGoals.forEach(goal => {
+                const progress = (currentAssets / goal.requiredCapital) * 100;
+                const remaining = Math.max(0, goal.requiredCapital - currentAssets);
+
+                html += `
+                    <div class="fire-goal-item ${goal.type}">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 style="margin: 0;">${goal.name}</h4>
+                            <span style="background: ${goal.type === 'classic' ? 'rgba(0,255,136,0.2)' : 'rgba(255,165,0,0.2)'}; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">
+                                ${goal.type === 'classic' ? '🔹 Classique' : '🔹 Spéculatif'}
+                            </span>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <p><strong>💰 Objectif:</strong> €${goal.monthlyIncome}/mois</p>
+                                <p><strong>🎯 Capital requis:</strong> €${goal.requiredCapital.toLocaleString()}</p>
+                            </div>
+                            <div>
+                                ${goal.type === 'classic' ?
+                                    `<p><strong>📉 Taux retrait:</strong> ${goal.withdrawalRate}%</p>` :
+                                    `<p><strong>📈 CAGR:</strong> ${goal.cagr}%</p>`
+                                }
+                                <p><strong>💸 Reste:</strong> €${remaining.toLocaleString()}</p>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                            <span><strong>Progression: ${progress.toFixed(1)}%</strong></span>
+                            <button class="btn btn-secondary" onclick="deleteFireGoal(${goal.id})" style="padding: 8px 15px; margin: 0; width: auto;">Supprimer</button>
+                        </div>
+
+                        <p style="font-size: 0.9rem; opacity: 0.7; margin: 10px 0 0 0;">Créé le ${goal.createdDate}</p>
+                    </div>
+                `;
+            });
+
+            document.getElementById('fireGoalsList').innerHTML = html || '<p style="text-align: center; opacity: 0.6;">Aucun objectif FIRE sauvegardé</p>';
+
+            const summaryContainer = document.getElementById('fireGoalsSummary');
+            if (summaryContainer) {
+                if (appData.fireGoals.length === 0) {
+                    summaryContainer.innerHTML = '<p style="text-align: center; color: #666;">Aucun objectif FIRE configuré</p>';
+                } else {
+                    summaryContainer.innerHTML = `<p style="text-align: center; color: var(--theme-primary);">${appData.fireGoals.length} objectif${appData.fireGoals.length > 1 ? 's' : ''} FIRE configuré${appData.fireGoals.length > 1 ? 's' : ''}</p>`;
+                }
+            }
+        }
+
+        function toggleFireForm(type) {
+            const formId = type === 'classic' ? 'classicFireForm' : 'speculativeFireForm';
+            const form = document.getElementById(formId);
+
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+                form.style.animation = 'slideIn 0.3s ease';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+
+        function toggleCompoundForm() {
+            const form = document.getElementById('compoundInterestForm');
+
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+                form.style.animation = 'slideIn 0.3s ease';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+
+        function calculateCompoundInterest() {
+            const initial = parseFloat(document.getElementById('initialAmount').value) || 0;
+            const monthly = parseFloat(document.getElementById('monthlyAmount').value) || 0;
+            const annualRate = parseFloat(document.getElementById('annualRate').value) / 100 || 0;
+            const years = parseInt(document.getElementById('years').value) || 0;
+
+            if (years === 0) {
+                alert('Veuillez entrer une durée valide');
+                return;
+            }
+
+            const monthlyRate = annualRate / 12;
+            let total = initial;
+            const dataPoints = [];
+
+            for (let year = 0; year <= years; year++) {
+                if (year === 0) {
+                    dataPoints.push({ year, value: initial });
+                } else {
+                    for (let month = 0; month < 12; month++) {
+                        total = total * (1 + monthlyRate) + monthly;
+                    }
+                    dataPoints.push({ year, value: total });
+                }
+            }
+
+            const finalAmount = total;
+            const totalInvested = initial + (monthly * 12 * years);
+            const totalInterest = finalAmount - totalInvested;
+
+            function getNumberClass(value) {
+                const str = value.toLocaleString();
+                if (str.length > 12) return 'very-large-number';
+                if (str.length > 8) return 'large-number';
+                return '';
+            }
+
+            let chartHTML = '<div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; margin: 20px 0;">';
+            chartHTML += '<h4 style="text-align: center; margin-bottom: 20px;">Évolution du Capital</h4>';
+            chartHTML += '<div style="display: flex; align-items: end; height: 200px; gap: 2px; margin-bottom: 20px;">';
+
+            const maxValue = Math.max(...dataPoints.map(p => p.value));
+            dataPoints.forEach((point, index) => {
+                const height = (point.value / maxValue) * 180;
+                const color = `hsl(${200 + (index * 10)}, 70%, 60%)`;
+                chartHTML += `
+                    <div style="
+                        flex: 1;
+                        height: ${height}px;
+                        background: linear-gradient(to top, ${color}, rgba(0,122,239,0.8));
+                        border-radius: 2px 2px 0 0;
+                        transition: all 0.3s ease;
+                        position: relative;
+                    " title="Année ${point.year}: €${point.value.toLocaleString()}"></div>
+                `;
+            });
+
+            chartHTML += '</div>';
+
+            chartHTML += '<div style="display: flex; justify-content: space-between; font-size: 12px; color: #ccc;">';
+            for (let i = 0; i <= years; i += Math.max(1, Math.floor(years / 5))) {
+                chartHTML += `<span>An ${i}</span>`;
+            }
+            chartHTML += '</div></div>';
+
+            let html = chartHTML;
+            html += `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                    <div class="stat-card">
+                        <div class="stat-number ${getNumberClass(totalInvested)}" style="color: #00FF88;">€${totalInvested.toLocaleString()}</div>
+                        <div class="stat-label">Total Investi</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number ${getNumberClass(totalInterest)}" style="color: var(--theme-primary);">€${totalInterest.toLocaleString()}</div>
+                        <div class="stat-label">Intérêts Gagnés</div>
+                    </div>
+                </div>
+            `;
+
+            html += `
+                <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, rgba(0, 122, 239, 0.2), rgba(0, 212, 255, 0.2)); border-radius: 25px; margin: 20px 0;">
+                    <div class="stat-number ${getNumberClass(finalAmount)}" style="font-size: ${finalAmount > 10000000 ? '1.8rem' : finalAmount > 1000000 ? '2.2rem' : '2.8rem'} !important; font-weight: 700; background: linear-gradient(45deg, #00FF88, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1; margin-bottom: 10px; word-break: break-all;">
+                        €${finalAmount.toLocaleString()}
+                    </div>
+                    <p>Capital final après ${years} ans</p>
+                    <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
+                        Gain de ${((finalAmount / totalInvested - 1) * 100).toFixed(1)}% sur l'investissement initial
+                    </p>
+                </div>
+            `;
+
+            html += '<button class="btn btn-secondary" onclick="resetCompoundInterest()" style="margin-top: 15px;">🔄 Réinitialiser</button>';
+
+            document.getElementById('simulationResults').innerHTML = html;
+        }
+
+        function resetClassicFire() {
+            document.getElementById('classicMonthlyIncome').value = '1500';
+            document.getElementById('classicWithdrawalRate').value = '4';
+
+            document.getElementById('classicFireResult').style.display = 'none';
+
+            window.currentClassicResult = null;
+        }
+
+        function resetSpeculativeFire() {
+            document.getElementById('speculativeMonthlyIncome').value = '1500';
+            document.getElementById('speculativeCagr').value = '70';
+            document.getElementById('speculativeDuration').value = '30';
+
+            document.getElementById('speculativeFireResult').style.display = 'none';
+
+            window.currentSpeculativeResult = null;
+        }
+
+        function resetCompoundInterest() {
+            document.getElementById('initialAmount').value = '';
+            document.getElementById('monthlyAmount').value = '';
+            document.getElementById('annualRate').value = '';
+            document.getElementById('years').value = '';
+
+            document.getElementById('simulationResults').innerHTML = '';
+        }
+
+        function deleteTransaction(id) {
+            if (confirm('Supprimer cette transaction ?')) {
+                appData.transactions = appData.transactions.filter(t => t.id !== id);
+                saveData();
+                updateDisplay();
+                updateCarousel();
+
+                displayRecentTransactions();
+                displayAllTransactions();
+                generateCalendar();
+
+                if (window.selectedDateForTransaction) {
+                    selectDate(window.selectedDateForTransaction);
+                }
+
+                alert('Transaction supprimée !');
+            }
+        }
+
+        function deleteRecurring(id) {
+            appData.recurring = appData.recurring.filter(r => r.id !== id);
+            saveData();
+            displayRecurring();
+            generateCalendar();
+            updateDisplay();
+        }
+
+        function deleteAsset(id) {
+            appData.assets = appData.assets.filter(a => a.id !== id);
+            saveData();
+            displayAssets();
+            updateDisplay();
+        }
+
+        function deleteFireGoal(id) {
+            if (confirm('Supprimer cet objectif FIRE ?')) {
+                appData.fireGoals = appData.fireGoals.filter(goal => goal.id !== id);
+                saveData();
+                displayFireGoals();
+                updateCarousel();
+            }
+        }
+
+        function saveData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            localStorage.setItem('moneyflowData', dataStr);
+        }
+
+        function loadData() {
+            const savedData = localStorage.getItem('moneyflowData');
+            if (savedData) {
+                try {
+                    appData = JSON.parse(savedData);
+                } catch (e) {
+                    console.error('Erreur lors du chargement des données:', e);
+                    appData = {
+                        transactions: [],
+                        recurring: [],
+                        assets: [],
+                        fireGoals: [],
+                        settings: { currentBalance: 0 }
+                    };
+                }
+            }
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `moneyflow-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+
+                    if (importedData.transactions && Array.isArray(importedData.transactions)) {
+                        appData = importedData;
+                        saveData();
+                        updateDisplay();
+                        alert('Données importées avec succès !');
+                        location.reload();
+                    } else {
+                        alert('Format de fichier invalide');
+                    }
+                } catch (error) {
+                    alert('Erreur lors de l\'importation : ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function clearAllData() {
+            if (confirm('Êtes-vous sûr de vouloir effacer toutes les données ? Cette action est irréversible.')) {
+                localStorage.removeItem('moneyflowData');
+                appData = {
+                    transactions: [],
+                    recurring: [],
+                    assets: [],
+                    fireGoals: [],
+                    settings: { currentBalance: 0 }
+                };
+                updateDisplay();
+                updateCarousel();
+                alert('Toutes les données ont été effacées.');
+            }
+        }
+
+        function updateDisplay() {
+            const balance = calculateCurrentBalance();
+            const totalIncome = calculateTotalIncome();
+            const totalExpenses = calculateTotalExpenses();
+            const totalAssets = calculateTotalAssets();
+
+            document.getElementById('headerBalance').textContent = `€${balance.toLocaleString()}`;
+
+            document.getElementById('currentBalance').textContent = `€${balance.toLocaleString()}`;
+            document.getElementById('totalIncome').textContent = `€${totalIncome.toLocaleString()}`;
+            document.getElementById('totalExpenses').textContent = `€${totalExpenses.toLocaleString()}`;
+            document.getElementById('totalAssets').textContent = `€${totalAssets.toLocaleString()}`;
+
+            const dataInfo = document.getElementById('dataInfo');
+            if (dataInfo) {
+                const futureTransactions = appData.transactions.filter(t => {
+                    const transactionDate = new Date(t.date);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    transactionDate.setHours(0, 0, 0, 0);
+                    return transactionDate > today;
+                }).length;
+
+                dataInfo.innerHTML = `
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                        <h4>État des données</h4>
+                        <p>Transactions: ${appData.transactions.length}</p>
+                        <p>Transactions futures: ${futureTransactions} 📅</p>
+                        <p>Récurrents: ${appData.recurring.length}</p>
+                        <p>Actifs: ${appData.assets.length}</p>
+                        <p>Objectifs FIRE: ${appData.fireGoals?.length || 0}</p>
+                        <p>Dernière sauvegarde: ${new Date().toLocaleString()}</p>
+                    </div>
+                `;
+            }
+
+            displayFireGoals();
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+              .then(reg => console.log('Service Worker enregistré'))
+              .catch(err => console.log('Erreur Service Worker:', err));
+        }
+
+        window.showPage = showPage;
+        window.showModal = showModal;
+        window.hideModal = hideModal;
+        window.changeMonth = changeMonth;
+        window.selectDate = selectDate;
+        window.addTransactionForDate = addTransactionForDate;
+        window.deleteTransaction = deleteTransaction;
+        window.calculateClassicFire = calculateClassicFire;
+        window.calculateSpeculativeFire = calculateSpeculativeFire;
+        window.saveClassicFireGoal = saveClassicFireGoal;
+        window.saveSpeculativeFireGoal = saveSpeculativeFireGoal;
+        window.calculateCompoundInterest = calculateCompoundInterest;
+        window.deleteRecurring = deleteRecurring;
+        window.deleteAsset = deleteAsset;
+        window.deleteFireGoal = deleteFireGoal;
+        window.exportData = exportData;
+        window.importData = importData;
+        window.clearAllData = clearAllData;
+        window.toggleFireForm = toggleFireForm;
+        window.toggleCompoundForm = toggleCompoundForm;
+        window.resetClassicFire = resetClassicFire;
+        window.resetSpeculativeFire = resetSpeculativeFire;
+        window.resetCompoundInterest = resetCompoundInterest;
+        window.goToSlide = goToSlide;
+    </script>
+</body>
+</html>
