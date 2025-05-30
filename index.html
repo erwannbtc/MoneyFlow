@@ -16,6 +16,7 @@
             --theme-primary: #007AEF;
             --theme-secondary: #00D4FF;
             --theme-gradient: linear-gradient(135deg, #007AEF, #00D4FF);
+            --bitcoin-color: #f7931a;
         }
 
         * {
@@ -262,6 +263,15 @@
             }
         }
 
+        .bitcoin-card {
+            background: linear-gradient(135deg, rgba(247, 147, 26, 0.1), rgba(255, 165, 0, 0.05));
+            border: 1px solid rgba(247, 147, 26, 0.3);
+        }
+
+        .bitcoin-card:hover {
+            border-color: var(--bitcoin-color);
+        }
+
         .progress-carousel {
             margin: 20px 0;
             position: relative;
@@ -377,6 +387,10 @@
             background: linear-gradient(135deg, #555, #666);
         }
 
+        .btn-bitcoin {
+            background: linear-gradient(135deg, var(--bitcoin-color), #ff9500);
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -465,6 +479,15 @@
             color: #666;
         }
 
+        .bitcoin-quantity-group {
+            display: none;
+            background: rgba(247, 147, 26, 0.05);
+            border: 1px solid rgba(247, 147, 26, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
         .transaction-item {
             display: flex;
             justify-content: space-between;
@@ -495,6 +518,19 @@
 
         .transaction-item.expense {
             border-left: 4px solid #FF4757;
+        }
+
+        .transaction-item.bitcoin {
+            border-left: 4px solid var(--bitcoin-color);
+            background: rgba(247, 147, 26, 0.05);
+        }
+
+        .bitcoin-chart {
+            background: rgba(247, 147, 26, 0.05);
+            border: 1px solid rgba(247, 147, 26, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
         }
 
         .calendar-grid {
@@ -582,6 +618,7 @@
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
             z-index: 1000;
+            overflow-y: auto;
         }
 
         .modal-content {
@@ -596,15 +633,51 @@
             width: 90%;
             max-width: 500px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         .close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
             font-size: 28px;
             cursor: pointer;
             color: #fff;
+            background: none;
+            border: none;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #555, #666);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .fire-simulator-section {
@@ -623,11 +696,6 @@
             border: 1px solid rgba(0, 255, 136, 0.3);
         }
 
-        .fire-result-card.speculative {
-            background: linear-gradient(135deg, rgba(255, 165, 0, 0.1), rgba(255, 71, 87, 0.1));
-            border: 1px solid rgba(255, 165, 0, 0.3);
-        }
-
         .result-main {
             text-align: center;
             margin-bottom: 20px;
@@ -640,12 +708,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
-        }
-
-        .fire-result-card.speculative .result-amount {
-            background: linear-gradient(45deg, #FFA500, #FF4757);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         .result-details {
@@ -671,14 +733,6 @@
             transition: width 0.3s ease;
         }
 
-        .risk-warning {
-            background: rgba(255, 165, 0, 0.1);
-            border: 1px solid rgba(255, 165, 0, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-
         .saved-goals-section {
             margin-top: 30px;
             padding-top: 20px;
@@ -690,15 +744,7 @@
             border-radius: 15px;
             padding: 20px;
             margin: 15px 0;
-            border-left: 4px solid;
-        }
-
-        .fire-goal-item.classic {
-            border-left-color: #00FF88;
-        }
-
-        .fire-goal-item.speculative {
-            border-left-color: #FFA500;
+            border-left: 4px solid #00FF88;
         }
 
         @media (max-width: 768px) {
@@ -722,6 +768,15 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+                top: 20px;
+                transform: translateX(-50%);
+                position: fixed;
+                max-height: calc(100vh - 40px);
+            }
         }
     </style>
 </head>
@@ -736,9 +791,10 @@
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showPage('dashboard')">📊 Dashboard</button>
             <button class="nav-tab" onclick="showPage('calendar')">📅 Calendrier</button>
+            <button class="nav-tab" onclick="showPage('bitcoin')">₿ Bitcoin</button>
             <button class="nav-tab" onclick="showPage('tools')">🛠️ Outils</button>
             <button class="nav-tab" onclick="showPage('portfolio')">📈 Actifs</button>
-            <button class="nav-tab" onclick="showPage('data')">💾 Données</button>
+            <button class="nav-tab" onclick="showPage('settings')">⚙️ Paramètres</button>
         </div>
 
         <div class="content">
@@ -760,17 +816,17 @@
                             <div class="stat-number" id="totalAssets">€0</div>
                             <div class="stat-label">Total Actifs</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="totalIncome" style="color: #00FF88;">€0</div>
-                            <div class="stat-label">Revenus Totaux</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="totalExpenses" style="color: #FF4757;">€0</div>
-                            <div class="stat-label">Dépenses Totales</div>
-                        </div>
                     </div>
 
                     <button class="btn" onclick="showModal('transactionModal')">+ Ajouter Transaction</button>
+                </div>
+
+                <div class="card bitcoin-card animate-in" id="bitcoinSummaryCard">
+                    <h3>₿ Bitcoin Stack</h3>
+                    <div id="bitcoinSummary">
+                        <p style="text-align: center; color: #666;">Aucun achat Bitcoin enregistré</p>
+                    </div>
+                    <button class="btn btn-bitcoin" onclick="showPage('bitcoin')">Voir Bitcoin</button>
                 </div>
 
                 <div class="card animate-in">
@@ -793,13 +849,54 @@
                 <div class="card">
                     <h3>📅 Calendrier Financier</h3>
                     <button class="btn" onclick="showModal('transactionModal')">+ Ajouter Transaction</button>
-                    <button class="btn" onclick="showModal('recurringModal')">+ Ajouter Récurrent</button>
                     <div id="calendarView"></div>
                 </div>
 
                 <div class="card">
-                    <h3>Toutes les Transactions</h3>
+                    <h3>Historique des Transactions</h3>
                     <div id="allTransactions"></div>
+                </div>
+            </div>
+
+            <!-- Bitcoin Page -->
+            <div id="bitcoin" class="page">
+                <div class="card bitcoin-card">
+                    <h3>₿ Bitcoin Stack</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="bitcoinStack" style="color: var(--bitcoin-color);">0 BTC</div>
+                            <div class="stat-label">Stack Total</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="bitcoinValue" style="color: var(--bitcoin-color);">€0</div>
+                            <div class="stat-label">Valeur Actuelle</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="bitcoinAvgPrice" style="color: #00FF88;">€0</div>
+                            <div class="stat-label">Prix Moyen d'Achat</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="bitcoinPnL" style="color: #ccc;">0%</div>
+                            <div class="stat-label">P&L Total</div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-bitcoin" onclick="showModal('transactionModal')">+ Acheter Bitcoin</button>
+                </div>
+
+                <div class="card">
+                    <h3>📈 Évolution du Stack</h3>
+                    <div class="bitcoin-chart" id="bitcoinChart">
+                        <p style="text-align: center; color: #666;">Graphique d'évolution du stack</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Historique des Achats Bitcoin</h3>
+                    <div id="bitcoinTransactions"></div>
                 </div>
             </div>
 
@@ -844,55 +941,6 @@
                                     </div>
                                     <button class="btn btn-secondary" onclick="saveClassicFireGoal()">💾 Sauver comme Objectif</button>
                                     <button class="btn btn-secondary" onclick="resetClassicFire()" style="margin-top: 10px;">🔄 Réinitialiser</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="fire-simulator-section">
-                        <h4>🔹 FIRE Spéculatif (Croissance Dynamique)</h4>
-                        <p style="opacity: 0.8; margin-bottom: 20px;">Capital en croissance, vivre des rendements uniquement</p>
-                        <button class="btn" onclick="toggleFireForm('speculative')">🚀 Ouvrir le Simulateur</button>
-
-                        <div id="speculativeFireForm" style="display: none; margin-top: 20px;">
-                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                                <div class="form-group">
-                                    <label class="form-label">Revenu mensuel souhaité (€)</label>
-                                    <input type="number" class="form-input" id="speculativeMonthlyIncome" placeholder="1500" value="1500">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">CAGR estimé (%)</label>
-                                    <input type="number" class="form-input" id="speculativeCagr" placeholder="70" value="70" step="0.1">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Durée projetée (années)</label>
-                                    <input type="number" class="form-input" id="speculativeDuration" placeholder="30" value="30">
-                                </div>
-                            </div>
-                            <button class="btn" onclick="calculateSpeculativeFire()">🚀 Calculer</button>
-                        </div>
-
-                        <div id="speculativeFireResult" style="display: none;">
-                            <div class="fire-result-card speculative">
-                                <div class="result-main">
-                                    <div class="result-amount" id="speculativeRequiredCapital">€0</div>
-                                    <p>Capital requis</p>
-                                </div>
-                                <div class="result-details">
-                                    <p><strong>📅 Revenu annuel:</strong> <span id="speculativeAnnualIncome">€0</span></p>
-                                    <p><strong>📈 CAGR estimé:</strong> <span id="speculativeCagrDisplay">70%</span></p>
-                                    <p><strong>⏱️ Durée projetée:</strong> <span id="speculativeDurationDisplay">30 ans</span></p>
-                                    <div class="risk-warning">
-                                        <p>⚠️ <strong>Attention:</strong> Stratégie à haut risque adaptée aux investissements volatils (crypto, actions de croissance)</p>
-                                    </div>
-                                    <div class="progress-section">
-                                        <div class="progress-bar">
-                                            <div class="progress-fill" id="speculativeProgress" style="width: 0%"></div>
-                                        </div>
-                                        <p><strong>Progression:</strong> <span id="speculativeProgressText">0%</span></p>
-                                    </div>
-                                    <button class="btn btn-secondary" onclick="saveSpeculativeFireGoal()">💾 Sauver comme Objectif</button>
-                                    <button class="btn btn-secondary" onclick="resetSpeculativeFire()" style="margin-top: 10px;">🔄 Réinitialiser</button>
                                 </div>
                             </div>
                         </div>
@@ -947,15 +995,28 @@
                 </div>
             </div>
 
-            <!-- Gestion des Données -->
-            <div id="data" class="page">
+            <!-- Paramètres -->
+            <div id="settings" class="page">
                 <div class="card">
-                    <h3>💾 Gestion des Données</h3>
-                    <button class="btn" onclick="exportData()">📤 Exporter JSON</button>
-                    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Importer JSON</button>
-                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
-                    <button class="btn btn-secondary" onclick="clearAllData()">🗑️ Effacer Toutes les Données</button>
-                    <div id="dataInfo"></div>
+                    <h3>⚙️ Paramètres</h3>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <h4>📝 Gestion des Catégories</h4>
+                        <div id="categoriesList"></div>
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <input type="text" id="newCategoryInput" placeholder="Nouvelle catégorie" class="form-input" style="margin-bottom: 0;">
+                            <button class="btn" onclick="addCategory()" style="width: auto; padding: 15px 20px; margin-bottom: 0;">Ajouter</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4>💾 Gestion des Données</h4>
+                        <button class="btn" onclick="exportData()">📤 Exporter JSON</button>
+                        <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Importer JSON</button>
+                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                        <button class="btn btn-secondary" onclick="clearAllData()">🗑️ Effacer Toutes les Données</button>
+                        <div id="dataInfo"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -964,8 +1025,15 @@
     <!-- Modales -->
     <div id="transactionModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="hideModal('transactionModal')">&times;</span>
-            <h3>Nouvelle Transaction</h3>
+            <div class="modal-header">
+                <h3 id="transactionModalTitle">Nouvelle Transaction</h3>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button class="back-btn" onclick="hideModal('transactionModal')">
+                        ← Retour
+                    </button>
+                    <span class="close" onclick="hideModal('transactionModal')">&times;</span>
+                </div>
+            </div>
             <form id="transactionForm">
                 <div class="form-group">
                     <label class="form-label">Nom</label>
@@ -984,15 +1052,24 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Catégorie</label>
-                    <input type="text" class="form-input" id="transactionCategory">
+                    <select class="form-input" id="transactionCategory" onchange="toggleBitcoinQuantity()" required>
+                        <option value="">Sélectionner une catégorie</option>
+                    </select>
+                </div>
+                <div class="bitcoin-quantity-group" id="bitcoinQuantityGroup">
+                    <label class="form-label">🟡 Quantité de Bitcoin achetée</label>
+                    <input type="number" class="form-input" id="bitcoinQuantity" step="0.00000001" placeholder="0.001">
+                    <small style="opacity: 0.7; margin-top: 5px; display: block;">
+                        💡 Entrez la quantité de Bitcoin achetée (ex: 0.001, 0.5, 1.2)
+                    </small>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Date</label>
                     <input type="date" class="form-input" id="transactionDate" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Récurrent</label>
-                    <select class="form-input" id="transactionRecurring">
+                    <label class="form-label">Récurrente</label>
+                    <select class="form-input" id="transactionRecurring" onchange="toggleRecurringOptions()">
                         <option value="no">Non</option>
                         <option value="yes">Oui</option>
                     </select>
@@ -1018,51 +1095,12 @@
         </div>
     </div>
 
-    <div id="recurringModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="hideModal('recurringModal')">&times;</span>
-            <h3>Transaction Récurrente</h3>
-            <form id="recurringForm">
-                <div class="form-group">
-                    <label class="form-label">Nom</label>
-                    <input type="text" class="form-input" id="recurringName" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Montant (€)</label>
-                    <input type="number" class="form-input" id="recurringAmount" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Type</label>
-                    <select class="form-input" id="recurringType" required>
-                        <option value="income">Revenu</option>
-                        <option value="expense">Dépense</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Fréquence</label>
-                    <select class="form-input" id="recurringFrequency" required>
-                        <option value="monthly">Mensuelle</option>
-                        <option value="weekly">Hebdomadaire</option>
-                        <option value="yearly">Annuelle</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Date de début</label>
-                    <input type="date" class="form-input" id="recurringStartDate" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Date de fin (optionnelle)</label>
-                    <input type="date" class="form-input" id="recurringEndDate">
-                </div>
-                <button type="submit" class="btn">Ajouter</button>
-            </form>
-        </div>
-    </div>
-
     <div id="dateDetailsModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="hideModal('dateDetailsModal')">&times;</span>
-            <h3 id="dateDetailsTitle">Transactions du jour</h3>
+            <div class="modal-header">
+                <h3 id="dateDetailsTitle">Transactions du jour</h3>
+                <span class="close" onclick="hideModal('dateDetailsModal')">&times;</span>
+            </div>
             <div id="dateTransactionsList"></div>
             <button class="btn" onclick="addTransactionForDate()" style="margin-top: 15px;">+ Ajouter une transaction</button>
         </div>
@@ -1070,22 +1108,27 @@
 
     <div id="assetModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="hideModal('assetModal')">&times;</span>
-            <h3>Nouvel Actif</h3>
+            <div class="modal-header">
+                <h3>Nouvel Actif</h3>
+                <span class="close" onclick="hideModal('assetModal')">&times;</span>
+            </div>
             <form id="assetForm">
                 <div class="form-group">
-                    <label class="form-label">Nom</label>
-                    <input type="text" class="form-input" id="assetName" required>
+                    <label class="form-label">Nom de l'actif</label>
+                    <input type="text" class="form-input" id="assetName" placeholder="ex: Bitcoin, Apple Inc." required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Quantité</label>
-                    <input type="number" class="form-input" id="assetQuantity" step="0.00000001" required>
+                    <label class="form-label">Ticker / Symbole</label>
+                    <input type="text" class="form-input" id="assetTicker" placeholder="ex: BTC, AAPL, MSTR" required style="text-transform: uppercase;">
+                    <small style="opacity: 0.7; font-size: 0.8rem; margin-top: 5px; display: block;">
+                        💡 Entrez le symbole (ex: BTC, ETH, AAPL, TSLA). Le prix sera récupéré automatiquement.
+                    </small>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Prix unitaire (€)</label>
-                    <input type="number" class="form-input" id="assetPrice" step="0.01" required>
+                    <label class="form-label">Quantité détenue</label>
+                    <input type="number" class="form-input" id="assetQuantity" step="0.00000001" placeholder="ex: 0.5, 100" required>
                 </div>
-                <button type="submit" class="btn">Ajouter</button>
+                <button type="submit" class="btn">🔄 Ajouter avec Prix Auto</button>
             </form>
         </div>
     </div>
@@ -1093,9 +1136,9 @@
     <script>
         let appData = {
             transactions: [],
-            recurring: [],
             assets: [],
             fireGoals: [],
+            categories: ['bitcoin', 'alimentation', 'transport', 'logement', 'loisirs', 'santé', 'shopping', 'divers'],
             settings: {
                 currentBalance: 0
             }
@@ -1104,6 +1147,539 @@
         let currentCalendarDate = new Date();
         let carouselIndex = 0;
         let carouselInterval = null;
+        let priceUpdateInterval = null;
+
+        // === SYSTÈME DE GESTION DES PRIX D'ACTIFS ===
+        class AssetPriceManager {
+            constructor() {
+                this.cryptoIds = new Map([
+                    ['BTC', 'bitcoin'],
+                    ['ETH', 'ethereum'],
+                    ['ADA', 'cardano'],
+                    ['DOT', 'polkadot'],
+                    ['LINK', 'chainlink'],
+                    ['LTC', 'litecoin'],
+                    ['XRP', 'ripple'],
+                    ['SOL', 'solana'],
+                    ['AVAX', 'avalanche-2'],
+                    ['MATIC', 'matic-network'],
+                    ['UNI', 'uniswap'],
+                    ['ATOM', 'cosmos'],
+                    ['ALGO', 'algorand'],
+                    ['XLM', 'stellar'],
+                    ['VET', 'vechain'],
+                    ['ICP', 'internet-computer'],
+                    ['FIL', 'filecoin'],
+                    ['THETA', 'theta-token'],
+                    ['AAVE', 'aave'],
+                    ['COMP', 'compound-governance-token'],
+                    ['MKR', 'maker'],
+                    ['SNX', 'havven'],
+                    ['SUSHI', 'sushi'],
+                    ['CRV', 'curve-dao-token'],
+                    ['YFI', 'yearn-finance'],
+                    ['BAL', 'balancer'],
+                    ['REN', 'republic-protocol'],
+                    ['ZRX', '0x'],
+                    ['KNC', 'kyber-network-crystal'],
+                    ['LRC', 'loopring'],
+                    ['DOGE', 'dogecoin'],
+                    ['SHIB', 'shiba-inu'],
+                    ['MSTR', 'microstrategy']
+                ]);
+                
+                this.lastUpdate = {};
+                this.updateInterval = 10 * 60 * 1000; // 10 minutes
+            }
+
+            // Détecter si c'est une crypto ou une action
+            isCrypto(ticker) {
+                return this.cryptoIds.has(ticker.toUpperCase());
+            }
+
+            // Obtenir l'ID CoinGecko pour une crypto
+            getCryptoId(ticker) {
+                return this.cryptoIds.get(ticker.toUpperCase());
+            }
+
+            // Récupérer le prix d'une crypto via CoinGecko
+            async fetchCryptoPrice(ticker) {
+                try {
+                    const cryptoId = this.getCryptoId(ticker);
+                    if (!cryptoId) {
+                        throw new Error(`Crypto ${ticker} non supportée`);
+                    }
+
+                    const response = await fetch(
+                        `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoId}&vs_currencies=eur&include_24hr_change=true`,
+                        {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                            }
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(`Erreur API CoinGecko: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    const priceData = data[cryptoId];
+                    
+                    if (!priceData) {
+                        throw new Error(`Données non trouvées pour ${ticker}`);
+                    }
+
+                    return {
+                        price: priceData.eur,
+                        change24h: priceData.eur_24h_change || 0,
+                        source: 'coingecko',
+                        lastUpdate: Date.now()
+                    };
+                } catch (error) {
+                    console.error(`Erreur lors de la récupération du prix de ${ticker}:`, error);
+                    throw error;
+                }
+            }
+
+            // Récupérer le prix d'une action via Yahoo Finance (API publique)
+            async fetchStockPrice(ticker) {
+                try {
+                    // Utiliser l'API Yahoo Finance publique via query1.finance.yahoo.com
+                    const response = await fetch(
+                        `https://query1.finance.yahoo.com/v8/finance/chart/${ticker.toUpperCase()}?interval=1d&range=1d`,
+                        {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                            }
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(`Erreur API Yahoo Finance: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    const result = data.chart.result[0];
+                    
+                    if (!result || !result.meta) {
+                        throw new Error(`Action ${ticker} non trouvée`);
+                    }
+
+                    const currentPrice = result.meta.regularMarketPrice;
+                    const previousClose = result.meta.previousClose;
+                    const change24h = previousClose ? ((currentPrice - previousClose) / previousClose) * 100 : 0;
+
+                    // Convertir USD vers EUR (approximation, idéalement utiliser une API de change)
+                    const usdToEur = 0.92; // Taux approximatif, vous pouvez l'améliorer
+                    const priceInEur = currentPrice * usdToEur;
+
+                    return {
+                        price: priceInEur,
+                        change24h: change24h,
+                        source: 'yahoo',
+                        currency: result.meta.currency,
+                        lastUpdate: Date.now()
+                    };
+                } catch (error) {
+                    console.error(`Erreur lors de la récupération du prix de ${ticker}:`, error);
+                    throw error;
+                }
+            }
+
+            // Fonction principale pour récupérer le prix d'un actif
+            async fetchAssetPrice(ticker) {
+                const upperTicker = ticker.toUpperCase();
+                
+                try {
+                    let priceData;
+                    
+                    if (this.isCrypto(upperTicker)) {
+                        priceData = await this.fetchCryptoPrice(upperTicker);
+                    } else {
+                        priceData = await this.fetchStockPrice(upperTicker);
+                    }
+
+                    // Sauvegarder dans localStorage
+                    const cacheKey = `price_${upperTicker}`;
+                    localStorage.setItem(cacheKey, JSON.stringify(priceData));
+                    
+                    return priceData;
+                } catch (error) {
+                    // Essayer de récupérer depuis le cache en cas d'erreur
+                    const cacheKey = `price_${upperTicker}`;
+                    const cached = localStorage.getItem(cacheKey);
+                    
+                    if (cached) {
+                        const cachedData = JSON.parse(cached);
+                        console.warn(`Utilisation du prix en cache pour ${ticker}:`, cachedData);
+                        return cachedData;
+                    }
+                    
+                    throw error;
+                }
+            }
+
+            // Récupérer le prix depuis le cache
+            getCachedPrice(ticker) {
+                const cacheKey = `price_${ticker.toUpperCase()}`;
+                const cached = localStorage.getItem(cacheKey);
+                return cached ? JSON.parse(cached) : null;
+            }
+
+            // Vérifier si le prix en cache est encore valide (moins de 10 minutes)
+            isCacheValid(ticker) {
+                const cached = this.getCachedPrice(ticker);
+                if (!cached) return false;
+                
+                const age = Date.now() - cached.lastUpdate;
+                return age < this.updateInterval;
+            }
+
+            // Mettre à jour tous les prix des actifs
+            async updateAllAssetPrices() {
+                if (!appData.assets || appData.assets.length === 0) return;
+
+                console.log('🔄 Mise à jour des prix des actifs...');
+                
+                for (const asset of appData.assets) {
+                    if (asset.ticker) {
+                        try {
+                            const priceData = await this.fetchAssetPrice(asset.ticker);
+                            asset.currentPrice = priceData.price;
+                            asset.change24h = priceData.change24h;
+                            asset.lastPriceUpdate = priceData.lastUpdate;
+                            console.log(`✅ Prix mis à jour pour ${asset.ticker}: €${priceData.price.toFixed(2)}`);
+                        } catch (error) {
+                            console.error(`❌ Erreur mise à jour ${asset.ticker}:`, error);
+                        }
+                    }
+                }
+
+                // Sauvegarder les données mises à jour
+                saveData();
+                
+                // Rafraîchir l'affichage si on est sur la page portfolio
+                if (document.querySelector('#portfolio.active')) {
+                    displayAssets();
+                }
+                
+                updateDisplay();
+            }
+
+            // Démarrer les mises à jour automatiques
+            startAutomaticUpdates() {
+                // Mise à jour immédiate
+                this.updateAllAssetPrices();
+                
+                // Puis toutes les 10 minutes
+                if (priceUpdateInterval) {
+                    clearInterval(priceUpdateInterval);
+                }
+                
+                priceUpdateInterval = setInterval(() => {
+                    this.updateAllAssetPrices();
+                }, this.updateInterval);
+                
+                console.log('🕐 Mises à jour automatiques démarrées (toutes les 10 minutes)');
+            }
+
+            // Arrêter les mises à jour automatiques
+            stopAutomaticUpdates() {
+                if (priceUpdateInterval) {
+                    clearInterval(priceUpdateInterval);
+                    priceUpdateInterval = null;
+                    console.log('⏹️ Mises à jour automatiques arrêtées');
+                }
+            }
+        }
+
+        // Instance globale du gestionnaire de prix
+        const priceManager = new AssetPriceManager();
+
+        // === FONCTIONS BITCOIN ===
+        function getBitcoinTransactions() {
+            return appData.transactions.filter(t => t.category === 'bitcoin');
+        }
+
+        function calculateBitcoinStats() {
+            const bitcoinTxs = getBitcoinTransactions();
+            
+            if (bitcoinTxs.length === 0) {
+                return {
+                    totalStack: 0,
+                    totalInvested: 0,
+                    avgPrice: 0,
+                    currentValue: 0,
+                    pnl: 0,
+                    pnlPercentage: 0
+                };
+            }
+
+            const totalStack = bitcoinTxs.reduce((sum, tx) => sum + (tx.bitcoinQuantity || 0), 0);
+            const totalInvested = bitcoinTxs.reduce((sum, tx) => sum + tx.amount, 0);
+            const avgPrice = totalInvested / totalStack;
+
+            // Récupérer le prix actuel du Bitcoin
+            const btcPriceData = priceManager.getCachedPrice('BTC');
+            const currentBtcPrice = btcPriceData ? btcPriceData.price : 0;
+            const currentValue = totalStack * currentBtcPrice;
+            const pnl = currentValue - totalInvested;
+            const pnlPercentage = totalInvested > 0 ? (pnl / totalInvested) * 100 : 0;
+
+            return {
+                totalStack,
+                totalInvested,
+                avgPrice,
+                currentValue,
+                pnl,
+                pnlPercentage,
+                currentBtcPrice
+            };
+        }
+
+        function displayBitcoinSummary() {
+            const stats = calculateBitcoinStats();
+            const summaryEl = document.getElementById('bitcoinSummary');
+            
+            if (stats.totalStack === 0) {
+                summaryEl.innerHTML = '<p style="text-align: center; color: #666;">Aucun achat Bitcoin enregistré</p>';
+                return;
+            }
+
+            const pnlColor = stats.pnl >= 0 ? '#00FF88' : '#FF4757';
+            const pnlSign = stats.pnl >= 0 ? '+' : '';
+
+            summaryEl.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div style="text-align: center;">
+                        <div style="color: var(--bitcoin-color); font-weight: bold; font-size: 1.2rem;">
+                            ${stats.totalStack.toFixed(8)} BTC
+                        </div>
+                        <small>Stack Total</small>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="color: ${pnlColor}; font-weight: bold; font-size: 1.2rem;">
+                            ${pnlSign}€${Math.abs(stats.pnl).toFixed(0)}
+                        </div>
+                        <small>P&L (${pnlSign}${stats.pnlPercentage.toFixed(1)}%)</small>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayBitcoinPage() {
+            const stats = calculateBitcoinStats();
+            
+            // Mettre à jour les statistiques
+            document.getElementById('bitcoinStack').textContent = `${stats.totalStack.toFixed(8)} BTC`;
+            document.getElementById('bitcoinValue').textContent = `€${stats.currentValue.toFixed(0)}`;
+            document.getElementById('bitcoinAvgPrice').textContent = `€${stats.avgPrice.toFixed(0)}`;
+            
+            const pnlEl = document.getElementById('bitcoinPnL');
+            const pnlColor = stats.pnl >= 0 ? '#00FF88' : '#FF4757';
+            const pnlSign = stats.pnl >= 0 ? '+' : '';
+            pnlEl.textContent = `${pnlSign}${stats.pnlPercentage.toFixed(1)}%`;
+            pnlEl.style.color = pnlColor;
+
+            // Afficher les transactions Bitcoin
+            displayBitcoinTransactions();
+            
+            // Générer le graphique d'évolution
+            generateBitcoinChart();
+        }
+
+        function displayBitcoinTransactions() {
+            const bitcoinTxs = getBitcoinTransactions().sort((a, b) => new Date(b.date) - new Date(a.date));
+            const container = document.getElementById('bitcoinTransactions');
+            
+            if (bitcoinTxs.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.5);">Aucun achat Bitcoin</p>';
+                return;
+            }
+
+            let html = '';
+            bitcoinTxs.forEach(tx => {
+                const btcQuantity = tx.bitcoinQuantity || 0;
+                const avgPrice = btcQuantity > 0 ? tx.amount / btcQuantity : 0;
+                
+                html += `
+                    <div class="transaction-item bitcoin">
+                        <div>
+                            <strong>${tx.name}</strong>
+                            <br><small>${tx.date} - ${btcQuantity.toFixed(8)} BTC</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="color: var(--bitcoin-color); font-weight: bold; font-size: 1.1rem;">
+                                €${tx.amount.toFixed(2)}
+                            </div>
+                            <small style="opacity: 0.7;">€${avgPrice.toFixed(0)}/BTC</small>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function generateBitcoinChart() {
+            const bitcoinTxs = getBitcoinTransactions().sort((a, b) => new Date(a.date) - new Date(b.date));
+            const chartContainer = document.getElementById('bitcoinChart');
+            
+            if (bitcoinTxs.length === 0) {
+                chartContainer.innerHTML = '<p style="text-align: center; color: #666;">Aucune donnée pour le graphique</p>';
+                return;
+            }
+
+            let cumulativeStack = 0;
+            const dataPoints = [];
+            
+            bitcoinTxs.forEach(tx => {
+                cumulativeStack += tx.bitcoinQuantity || 0;
+                dataPoints.push({
+                    date: tx.date,
+                    stack: cumulativeStack,
+                    amount: tx.amount,
+                    quantity: tx.bitcoinQuantity || 0
+                });
+            });
+
+            let chartHTML = '<h4 style="text-align: center; margin-bottom: 20px;">Évolution du Stack Bitcoin</h4>';
+            chartHTML += '<div style="display: flex; align-items: end; height: 200px; gap: 2px; margin-bottom: 20px;">';
+
+            const maxStack = Math.max(...dataPoints.map(p => p.stack));
+            dataPoints.forEach((point, index) => {
+                const height = maxStack > 0 ? (point.stack / maxStack) * 180 : 0;
+                const color = `hsl(${30 + (index * 5)}, 70%, 60%)`;
+                chartHTML += `
+                    <div style="
+                        flex: 1;
+                        height: ${height}px;
+                        background: linear-gradient(to top, ${color}, var(--bitcoin-color));
+                        border-radius: 2px 2px 0 0;
+                        transition: all 0.3s ease;
+                        position: relative;
+                    " title="${point.date}: ${point.stack.toFixed(8)} BTC (+${point.quantity.toFixed(8)} BTC)"></div>
+                `;
+            });
+
+            chartHTML += '</div>';
+            chartHTML += `
+                <div style="text-align: center; padding: 15px; background: rgba(247, 147, 26, 0.1); border-radius: 10px;">
+                    <strong>Stack Final: ${cumulativeStack.toFixed(8)} BTC</strong>
+                    <br><small>${dataPoints.length} achat${dataPoints.length > 1 ? 's' : ''} effectué${dataPoints.length > 1 ? 's' : ''}</small>
+                </div>
+            `;
+
+            chartContainer.innerHTML = chartHTML;
+        }
+
+        function calculateMonthlyBitcoinSummary(year, month) {
+            const monthlyBitcoinTxs = appData.transactions.filter(t => {
+                const tDate = new Date(t.date);
+                return t.category === 'bitcoin' && tDate.getMonth() === month && tDate.getFullYear() === year;
+            });
+
+            const monthlyBitcoinAmount = monthlyBitcoinTxs.reduce((sum, tx) => sum + (tx.bitcoinQuantity || 0), 0);
+            return monthlyBitcoinAmount;
+        }
+
+        // === GESTION DES CATÉGORIES ===
+        function loadCategories() {
+            const categorySelect = document.getElementById('transactionCategory');
+            if (!categorySelect) return;
+
+            categorySelect.innerHTML = '<option value="">Sélectionner une catégorie</option>';
+            
+            appData.categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                if (category === 'bitcoin') {
+                    option.textContent = '₿ Bitcoin';
+                }
+                categorySelect.appendChild(option);
+            });
+        }
+
+        function displayCategories() {
+            const container = document.getElementById('categoriesList');
+            if (!container) return;
+
+            let html = '';
+            appData.categories.forEach(category => {
+                const displayName = category === 'bitcoin' ? '₿ Bitcoin' : category.charAt(0).toUpperCase() + category.slice(1);
+                const canDelete = category !== 'bitcoin'; // Bitcoin ne peut pas être supprimée
+                
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 8px;">
+                        <span>${displayName}</span>
+                        ${canDelete ? `<button onclick="deleteCategory('${category}')" style="background: #FF4757; border: none; color: white; padding: 5px 10px; border-radius: 15px; cursor: pointer; font-size: 12px;">Supprimer</button>` : '<span style="opacity: 0.5; font-size: 12px;">Obligatoire</span>'}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function addCategory() {
+            const input = document.getElementById('newCategoryInput');
+            const newCategory = input.value.trim().toLowerCase();
+            
+            if (!newCategory) {
+                alert('Veuillez entrer un nom de catégorie');
+                return;
+            }
+
+            if (appData.categories.includes(newCategory)) {
+                alert('Cette catégorie existe déjà');
+                return;
+            }
+
+            appData.categories.push(newCategory);
+            saveData();
+            input.value = '';
+            displayCategories();
+            loadCategories();
+        }
+
+        function deleteCategory(category) {
+            if (category === 'bitcoin') {
+                alert('La catégorie Bitcoin ne peut pas être supprimée');
+                return;
+            }
+
+            if (confirm(`Supprimer la catégorie "${category}" ?`)) {
+                appData.categories = appData.categories.filter(c => c !== category);
+                
+                // Mettre à jour les transactions existantes
+                appData.transactions.forEach(tx => {
+                    if (tx.category === category) {
+                        tx.category = 'divers';
+                    }
+                });
+                
+                saveData();
+                displayCategories();
+                loadCategories();
+            }
+        }
+
+        function toggleBitcoinQuantity() {
+            const categorySelect = document.getElementById('transactionCategory');
+            const bitcoinGroup = document.getElementById('bitcoinQuantityGroup');
+            
+            if (categorySelect.value === 'bitcoin') {
+                bitcoinGroup.style.display = 'block';
+                // Forcer le type à "dépense" pour les achats Bitcoin
+                document.getElementById('transactionType').value = 'expense';
+            } else {
+                bitcoinGroup.style.display = 'none';
+                document.getElementById('bitcoinQuantity').value = '';
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
@@ -1112,6 +1688,11 @@
             updateCarousel();
             startCarousel();
             setupEventListeners();
+            loadCategories();
+            displayCategories();
+
+            // Démarrer les mises à jour automatiques des prix
+            priceManager.startAutomaticUpdates();
 
             setTimeout(() => {
                 document.querySelectorAll('.card').forEach((card, index) => {
@@ -1125,9 +1706,9 @@
         function setTodayDate() {
             const today = new Date().toISOString().split('T')[0];
             const transactionDate = document.getElementById('transactionDate');
-            const recurringStartDate = document.getElementById('recurringStartDate');
-            if (transactionDate) transactionDate.value = today;
-            if (recurringStartDate) recurringStartDate.value = today;
+            if (transactionDate) {
+                transactionDate.value = today;
+            }
         }
 
         function showPage(pageName) {
@@ -1158,12 +1739,34 @@
                 displayAssets();
             } else if (pageName === 'tools') {
                 displayFireGoals();
+            } else if (pageName === 'bitcoin') {
+                displayBitcoinPage();
+            } else if (pageName === 'settings') {
+                displayCategories();
             } else if (pageName === 'dashboard') {
                 updateCarousel();
                 startCarousel();
                 displayRecentTransactions();
+                displayBitcoinSummary();
             } else {
                 stopCarousel();
+            }
+        }
+
+        function toggleRecurringOptions() {
+            const recurringSelect = document.getElementById('transactionRecurring');
+            const recurringOptions = document.getElementById('recurringOptions');
+            const recurringStartDateOptions = document.getElementById('recurringStartDateOptions');
+            const recurringEndDateOptions = document.getElementById('recurringEndDateOptions');
+
+            if (recurringSelect.value === 'yes') {
+                recurringOptions.style.display = 'block';
+                recurringStartDateOptions.style.display = 'block';
+                recurringEndDateOptions.style.display = 'block';
+            } else {
+                recurringOptions.style.display = 'none';
+                recurringStartDateOptions.style.display = 'none';
+                recurringEndDateOptions.style.display = 'none';
             }
         }
 
@@ -1188,6 +1791,17 @@
                 subValue: `${monthlyTransactions.length} transactions`,
                 progress: null
             });
+
+            // Slide Bitcoin du mois
+            const monthlyBitcoin = calculateMonthlyBitcoinSummary(thisYear, thisMonth);
+            if (monthlyBitcoin > 0) {
+                slides.push({
+                    title: "Bitcoin acheté ce mois",
+                    mainValue: `+${monthlyBitcoin.toFixed(8)} BTC`,
+                    subValue: "Stack en croissance",
+                    progress: null
+                });
+            }
 
             const totalAssets = calculateTotalAssets();
             slides.push({
@@ -1280,6 +1894,13 @@
                 setTimeout(() => {
                     modal.style.opacity = '1';
                 }, 10);
+                
+                // Reset transaction modal title when opened normally
+                if (modalId === 'transactionModal') {
+                    document.getElementById('transactionModalTitle').textContent = 'Nouvelle Transaction';
+                    document.getElementById('transactionModalTitle').style.color = '#FFF';
+                    loadCategories(); // Recharger les catégories
+                }
             }
         }
 
@@ -1302,37 +1923,11 @@
                 });
             }
 
-            const recurringForm = document.getElementById('recurringForm');
-            if (recurringForm) {
-                recurringForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    addRecurring();
-                });
-            }
-
             const assetForm = document.getElementById('assetForm');
             if (assetForm) {
                 assetForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     addAsset();
-                });
-            }
-
-            const transactionRecurringSelect = document.getElementById('transactionRecurring');
-            if (transactionRecurringSelect) {
-                transactionRecurringSelect.addEventListener('change', function() {
-                    const recurringOptions = document.getElementById('recurringOptions');
-                    const recurringStartDateOptions = document.getElementById('recurringStartDateOptions');
-                    const recurringEndDateOptions = document.getElementById('recurringEndDateOptions');
-                    if (this.value === 'yes') {
-                        recurringOptions.style.display = 'block';
-                        recurringStartDateOptions.style.display = 'block';
-                        recurringEndDateOptions.style.display = 'block';
-                    } else {
-                        recurringOptions.style.display = 'none';
-                        recurringStartDateOptions.style.display = 'none';
-                        recurringEndDateOptions.style.display = 'none';
-                    }
                 });
             }
 
@@ -1344,68 +1939,141 @@
         }
 
         function addTransaction() {
-            const transactionRecurring = document.getElementById('transactionRecurring').value;
-            if (transactionRecurring === 'yes') {
-                addRecurring();
-                return;
-            }
-
+            const isRecurring = document.getElementById('transactionRecurring').value === 'yes';
+            const category = document.getElementById('transactionCategory').value;
+            const bitcoinQuantity = category === 'bitcoin' ? parseFloat(document.getElementById('bitcoinQuantity').value) || 0 : 0;
+            
             const transaction = {
                 id: Date.now(),
                 name: document.getElementById('transactionName').value,
                 amount: parseFloat(document.getElementById('transactionAmount').value),
                 type: document.getElementById('transactionType').value,
-                category: document.getElementById('transactionCategory').value,
-                date: document.getElementById('transactionDate').value
+                category: category,
+                bitcoinQuantity: bitcoinQuantity,
+                date: document.getElementById('transactionDate').value,
+                recurring: isRecurring,
+                frequency: isRecurring ? document.getElementById('recurringFrequency').value : null,
+                startDate: isRecurring ? document.getElementById('recurringStartDate').value : null,
+                endDate: isRecurring ? document.getElementById('recurringEndDate').value || null : null
             };
 
-            appData.transactions.push(transaction);
+            if (isRecurring) {
+                addRecurringTransactions(transaction);
+            } else {
+                appData.transactions.push(transaction);
+            }
+
             saveData();
             updateDisplay();
             hideModal('transactionModal');
             document.getElementById('transactionForm').reset();
             setTodayDate();
             updateCarousel();
-
             displayRecentTransactions();
             displayAllTransactions();
+            displayBitcoinSummary();
         }
 
-        function addRecurring() {
-            const recurring = {
-                id: Date.now(),
-                name: document.getElementById(transactionRecurring === 'yes' ? 'transactionName' : 'recurringName').value,
-                amount: parseFloat(document.getElementById(transactionRecurring === 'yes' ? 'transactionAmount' : 'recurringAmount').value),
-                type: document.getElementById(transactionRecurring === 'yes' ? 'transactionType' : 'recurringType').value,
-                frequency: document.getElementById('recurringFrequency').value,
-                startDate: document.getElementById(transactionRecurring === 'yes' ? 'recurringStartDate' : 'recurringStartDate').value,
-                endDate: document.getElementById(transactionRecurring === 'yes' ? 'recurringEndDate' : 'recurringEndDate').value || null
-            };
+        function addRecurringTransactions(transaction) {
+            const startDate = new Date(transaction.startDate);
+            const endDate = transaction.endDate ? new Date(transaction.endDate) : null;
+            let currentDate = new Date(startDate);
 
-            appData.recurring.push(recurring);
-            saveData();
-            generateCalendar();
-            displayRecurring();
-            updateDisplay();
-            hideModal(transactionRecurring === 'yes' ? 'transactionModal' : 'recurringModal');
-            document.getElementById(transactionRecurring === 'yes' ? 'transactionForm' : 'recurringForm').reset();
-            setTodayDate();
+            while (true) {
+                if (endDate && currentDate > endDate) break;
+
+                const transactionCopy = { ...transaction, date: currentDate.toISOString().split('T')[0] };
+                appData.transactions.push(transactionCopy);
+
+                if (transaction.frequency === 'monthly') {
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                } else if (transaction.frequency === 'weekly') {
+                    currentDate.setDate(currentDate.getDate() + 7);
+                } else if (transaction.frequency === 'yearly') {
+                    currentDate.setFullYear(currentDate.getFullYear() + 1);
+                }
+
+                if (currentDate > new Date('2100-01-01')) break;
+            }
         }
 
         function addAsset() {
+            const assetName = document.getElementById('assetName').value;
+            const assetQuantity = parseFloat(document.getElementById('assetQuantity').value);
+            const assetTicker = document.getElementById('assetTicker').value.toUpperCase();
+
+            if (!assetName || !assetQuantity || !assetTicker) {
+                alert('Veuillez remplir tous les champs requis');
+                return;
+            }
+
+            // Créer l'actif avec des valeurs par défaut
             const asset = {
                 id: Date.now(),
-                name: document.getElementById('assetName').value,
-                quantity: parseFloat(document.getElementById('assetQuantity').value),
-                price: parseFloat(document.getElementById('assetPrice').value)
+                name: assetName,
+                ticker: assetTicker,
+                quantity: assetQuantity,
+                price: 0, // Prix manuel (legacy)
+                currentPrice: 0, // Prix automatique
+                change24h: 0,
+                lastPriceUpdate: null,
+                isAutoPrice: true
             };
 
-            appData.assets.push(asset);
-            saveData();
-            displayAssets();
-            updateDisplay();
-            hideModal('assetModal');
-            document.getElementById('assetForm').reset();
+            // Essayer de récupérer le prix automatiquement
+            showLoadingForAsset(asset.id);
+            
+            priceManager.fetchAssetPrice(assetTicker)
+                .then(priceData => {
+                    asset.currentPrice = priceData.price;
+                    asset.change24h = priceData.change24h;
+                    asset.lastPriceUpdate = priceData.lastUpdate;
+                    
+                    appData.assets.push(asset);
+                    saveData();
+                    displayAssets();
+                    updateDisplay();
+                    hideModal('assetModal');
+                    document.getElementById('assetForm').reset();
+                    
+                    console.log(`✅ Actif ${assetTicker} ajouté avec prix: €${priceData.price.toFixed(2)}`);
+                })
+                .catch(error => {
+                    // En cas d'erreur, permettre l'ajout manuel
+                    const useManual = confirm(
+                        `Impossible de récupérer le prix automatique pour ${assetTicker}.\n` +
+                        `Erreur: ${error.message}\n\n` +
+                        `Voulez-vous ajouter cet actif avec un prix manuel ?`
+                    );
+                    
+                    if (useManual) {
+                        const manualPrice = prompt('Entrez le prix manuel en euros:', '1.00');
+                        if (manualPrice && !isNaN(manualPrice)) {
+                            asset.price = parseFloat(manualPrice);
+                            asset.currentPrice = parseFloat(manualPrice);
+                            asset.isAutoPrice = false;
+                            
+                            appData.assets.push(asset);
+                            saveData();
+                            displayAssets();
+                            updateDisplay();
+                            hideModal('assetModal');
+                            document.getElementById('assetForm').reset();
+                        }
+                    }
+                    
+                    hideLoadingForAsset(asset.id);
+                });
+        }
+
+        function showLoadingForAsset(assetId) {
+            // Afficher un indicateur de chargement si nécessaire
+            console.log(`🔄 Récupération du prix pour l'actif ${assetId}...`);
+        }
+
+        function hideLoadingForAsset(assetId) {
+            // Masquer l'indicateur de chargement
+            console.log(`✅ Chargement terminé pour l'actif ${assetId}`);
         }
 
         function calculateCurrentBalance() {
@@ -1420,45 +2088,16 @@
                 }
             });
 
-            appData.recurring.forEach(recurring => {
-                const startDate = new Date(recurring.startDate);
-                const endDate = recurring.endDate ? new Date(recurring.endDate) : new Date('2999-12-31');
-                if (startDate <= today) {
-                    let currentDate = new Date(startDate);
-                    while (currentDate <= today && currentDate <= endDate) {
-                        balance += recurring.type === 'income' ? recurring.amount : -recurring.amount;
-                        if (recurring.frequency === 'monthly') {
-                            currentDate.setMonth(currentDate.getMonth() + 1);
-                        } else if (recurring.frequency === 'weekly') {
-                            currentDate.setDate(currentDate.getDate() + 7);
-                        } else if (recurring.frequency === 'yearly') {
-                            currentDate.setFullYear(currentDate.getFullYear() + 1);
-                        }
-                    }
-                }
-            });
-
             return balance;
         }
 
         function calculateTotalAssets() {
             const cashBalance = calculateCurrentBalance();
             const assetsValue = appData.assets.reduce((total, asset) => {
-                return total + (asset.quantity * asset.price);
+                const price = asset.currentPrice || asset.price || 0;
+                return total + (asset.quantity * price);
             }, 0);
             return cashBalance + assetsValue;
-        }
-
-        function calculateTotalIncome() {
-            return appData.transactions
-                .filter(t => t.type === 'income')
-                .reduce((total, t) => total + t.amount, 0);
-        }
-
-        function calculateTotalExpenses() {
-            return appData.transactions
-                .filter(t => t.type === 'expense')
-                .reduce((total, t) => total + t.amount, 0);
         }
 
         function generateCalendar() {
@@ -1501,13 +2140,7 @@
 
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const hasTransaction = appData.transactions.some(t => t.date === dateStr) ||
-                                      appData.recurring.some(r => {
-                                          const startDate = new Date(r.startDate);
-                                          const endDate = r.endDate ? new Date(r.endDate) : new Date('2999-12-31');
-                                          const currentDate = new Date(dateStr);
-                                          return startDate <= currentDate && currentDate <= endDate;
-                                      });
+                const hasTransaction = appData.transactions.some(t => t.date === dateStr);
 
                 const isToday = dateStr === todayStr;
                 const isFuture = new Date(dateStr) > today;
@@ -1527,11 +2160,18 @@
             calendarHTML += '</div>';
 
             const monthBalance = calculateMonthBalance(year, month);
+            const monthlyBitcoin = calculateMonthlyBitcoinSummary(year, month);
+            
             calendarHTML += `
                 <div style="text-align: center; margin-top: 20px; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 15px;">
                     <div style="font-size: 1.2rem; font-weight: 600; color: ${monthBalance >= 0 ? '#00FF88' : '#FF4757'};">
                         Solde fin ${monthNames[month]} : ${monthBalance >= 0 ? '+' : ''}€${monthBalance.toFixed(2)}
                     </div>
+                    ${monthlyBitcoin > 0 ? `
+                        <div style="font-size: 1rem; font-weight: 500; color: var(--bitcoin-color); margin-top: 5px;">
+                            Bitcoin acheté : +${monthlyBitcoin.toFixed(8)} BTC
+                        </div>
+                    ` : ''}
                     <div style="font-size: 0.9rem; opacity: 0.7; margin-top: 5px;">
                         Solde cumulé depuis le début
                     </div>
@@ -1553,24 +2193,6 @@
                 }
             });
 
-            appData.recurring.forEach(recurring => {
-                const startDate = new Date(recurring.startDate);
-                const endDate = recurring.endDate ? new Date(recurring.endDate) : new Date('2999-12-31');
-                if (startDate <= endOfMonth) {
-                    let currentDate = new Date(startDate);
-                    while (currentDate <= endOfMonth && currentDate <= endDate) {
-                        balance += recurring.type === 'income' ? recurring.amount : -recurring.amount;
-                        if (recurring.frequency === 'monthly') {
-                            currentDate.setMonth(currentDate.getMonth() + 1);
-                        } else if (recurring.frequency === 'weekly') {
-                            currentDate.setDate(currentDate.getDate() + 7);
-                        } else if (recurring.frequency === 'yearly') {
-                            currentDate.setFullYear(currentDate.getFullYear() + 1);
-                        }
-                    }
-                }
-            });
-
             return balance;
         }
 
@@ -1583,12 +2205,6 @@
             window.selectedDateForTransaction = dateStr;
 
             const dayTransactions = appData.transactions.filter(t => t.date === dateStr);
-            const dayRecurringTransactions = appData.recurring.filter(r => {
-                const startDate = new Date(r.startDate);
-                const endDate = r.endDate ? new Date(r.endDate) : new Date('2999-12-31');
-                const currentDate = new Date(dateStr);
-                return startDate <= currentDate && currentDate <= endDate;
-            });
 
             const selectedDate = new Date(dateStr);
             const today = new Date();
@@ -1605,43 +2221,26 @@
             document.getElementById('dateDetailsTitle').textContent = `Transactions du ${dateLabel}`;
 
             let html = '';
-            if (dayTransactions.length === 0 && dayRecurringTransactions.length === 0) {
+            if (dayTransactions.length === 0) {
                 html = '<p style="text-align: center; color: rgba(255,255,255,0.5); margin: 20px 0;">Aucune transaction pour cette date</p>';
             } else {
                 dayTransactions.forEach(transaction => {
                     const sign = transaction.type === 'income' ? '+' : '-';
                     const color = transaction.type === 'income' ? '#00FF88' : '#FF4757';
+                    const isBitcoin = transaction.category === 'bitcoin';
 
                     html += `
-                        <div class="transaction-item ${transaction.type}" style="margin-bottom: 10px;">
+                        <div class="transaction-item ${transaction.type} ${isBitcoin ? 'bitcoin' : ''}">
                             <div>
                                 <strong>${transaction.name}</strong>
+                                ${isBitcoin ? ` (₿ ${transaction.bitcoinQuantity?.toFixed(8)} BTC)` : ''}
                                 <br><small>${transaction.category || 'Sans catégorie'}</small>
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <div style="color: ${color}; font-weight: bold; font-size: 1.2rem;">
+                                <div style="color: ${isBitcoin ? 'var(--bitcoin-color)' : color}; font-weight: bold; font-size: 1.2rem;">
                                     ${sign}€${Math.abs(transaction.amount).toFixed(2)}
                                 </div>
                                 <button class="btn btn-secondary" onclick="deleteTransaction(${transaction.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                dayRecurringTransactions.forEach(recurring => {
-                    const sign = recurring.type === 'income' ? '+' : '-';
-                    const color = recurring.type === 'income' ? '#00FF88' : '#FF4757';
-
-                    html += `
-                        <div class="transaction-item ${recurring.type}" style="margin-bottom: 10px; background: rgba(0, 122, 239, 0.1);">
-                            <div>
-                                <strong>${recurring.name} (Récurrent)</strong>
-                                <br><small>${recurring.frequency}</small>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <div style="color: ${color}; font-weight: bold; font-size: 1.2rem;">
-                                    ${sign}€${Math.abs(recurring.amount).toFixed(2)}
-                                </div>
                             </div>
                         </div>
                     `;
@@ -1661,7 +2260,7 @@
                 today.setHours(0, 0, 0, 0);
                 selectedDate.setHours(0, 0, 0, 0);
 
-                const modalTitle = document.querySelector('#transactionModal h3');
+                const modalTitle = document.getElementById('transactionModalTitle');
                 if (selectedDate > today) {
                     modalTitle.textContent = `📅 Planifier pour le ${window.selectedDateForTransaction}`;
                     modalTitle.style.color = '#00FF88';
@@ -1680,24 +2279,34 @@
 
         function displayRecentTransactions() {
             let html = '';
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+            
+            // Filter only completed transactions (not future ones)
             const recentTransactions = appData.transactions
+                .filter(transaction => {
+                    const transactionDate = new Date(transaction.date);
+                    return transactionDate <= today;
+                })
                 .sort((a, b) => new Date(b.date) - new Date(a.date))
                 .slice(0, 5);
 
             if (recentTransactions.length === 0) {
-                html += '<p style="text-align: center; color: rgba(255,255,255,0.5); margin: 20px 0;">Aucune transaction enregistrée</p>';
+                html += '<p style="text-align: center; color: rgba(255,255,255,0.5); margin: 20px 0;">Aucune transaction réalisée</p>';
             } else {
                 recentTransactions.forEach(transaction => {
                     const sign = transaction.type === 'income' ? '+' : '-';
                     const color = transaction.type === 'income' ? '#00FF88' : '#FF4757';
+                    const isBitcoin = transaction.category === 'bitcoin';
 
                     html += `
-                        <div class="transaction-item ${transaction.type}">
+                        <div class="transaction-item ${transaction.type} ${isBitcoin ? 'bitcoin' : ''}">
                             <div>
                                 <strong>${transaction.name}</strong>
+                                ${isBitcoin ? ` (₿ ${transaction.bitcoinQuantity?.toFixed(8)} BTC)` : ''}
                                 <br><small>${transaction.date} - ${transaction.category || 'Sans catégorie'}</small>
                             </div>
-                            <div style="color: ${color}; font-weight: bold; font-size: 1.2rem;">
+                            <div style="color: ${isBitcoin ? 'var(--bitcoin-color)' : color}; font-weight: bold; font-size: 1.2rem;">
                                 ${sign}€${Math.abs(transaction.amount).toFixed(2)}
                             </div>
                         </div>
@@ -1713,41 +2322,43 @@
 
         function displayAllTransactions() {
             let html = '';
-            const sortedTransactions = appData.transactions
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+            
+            // Filter only completed transactions (not future ones)
+            const completedTransactions = appData.transactions
+                .filter(transaction => {
+                    const transactionDate = new Date(transaction.date);
+                    return transactionDate <= today;
+                })
                 .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            if (sortedTransactions.length === 0) {
-                html += '<p style="text-align: center; color: rgba(255,255,255,0.5); margin: 20px 0;">Aucune transaction enregistrée</p>';
+            if (completedTransactions.length === 0) {
+                html += '<p style="text-align: center; color: rgba(255,255,255,0.5); margin: 20px 0;">Aucune transaction réalisée</p>';
             } else {
-                sortedTransactions.forEach(transaction => {
+                completedTransactions.forEach(transaction => {
                     const sign = transaction.type === 'income' ? '+' : '-';
                     const color = transaction.type === 'income' ? '#00FF88' : '#FF4757';
+                    const isBitcoin = transaction.category === 'bitcoin';
 
                     const transactionDate = new Date(transaction.date);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    transactionDate.setHours(0, 0, 0, 0);
-
-                    const isFuture = transactionDate > today;
-                    const isToday = transactionDate.getTime() === today.getTime();
+                    const isToday = transactionDate.toDateString() === today.toDateString();
 
                     let dateLabel = transaction.date;
                     if (isToday) {
                         dateLabel = `${transaction.date} (Aujourd'hui)`;
-                    } else if (isFuture) {
-                        dateLabel = `${transaction.date} (Planifié)`;
                     }
 
                     html += `
-                        <div class="transaction-item ${transaction.type}" style="${isFuture ? 'opacity: 0.7; border-left-style: dashed;' : ''}">
+                        <div class="transaction-item ${transaction.type} ${isBitcoin ? 'bitcoin' : ''}">
                             <div>
                                 <strong>${transaction.name}</strong>
-                                ${isFuture ? ' 📅' : ''}
                                 ${isToday ? ' ✨' : ''}
+                                ${isBitcoin ? ` (₿ ${transaction.bitcoinQuantity?.toFixed(8)} BTC)` : ''}
                                 <br><small>${dateLabel} - ${transaction.category || 'Sans catégorie'}</small>
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px;">
-                                <div style="color: ${color}; font-weight: bold; font-size: 1.2rem;">
+                                <div style="color: ${isBitcoin ? 'var(--bitcoin-color)' : color}; font-weight: bold; font-size: 1.2rem;">
                                     ${sign}€${Math.abs(transaction.amount).toFixed(2)}
                                 </div>
                                 <button class="btn btn-secondary" onclick="deleteTransaction(${transaction.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">🗑️</button>
@@ -1763,48 +2374,54 @@
             }
         }
 
-        function displayRecurring() {
-            let html = '';
-            appData.recurring.forEach(recurring => {
-                const sign = recurring.type === 'income' ? '+' : '-';
-                const color = recurring.type === 'income' ? '#00FF88' : '#FF4757';
-
-                html += `
-                    <div class="transaction-item" style="background: rgba(0, 122, 239, 0.1); border: 1px solid rgba(0, 122, 239, 0.3);">
-                        <div>
-                            <strong>${recurring.name}</strong>
-                            <br><small>${recurring.frequency} - ${recurring.startDate} ${recurring.endDate ? `à ${recurring.endDate}` : ''}</small>
-                        </div>
-                        <div>
-                            <div style="color: ${color}; font-weight: bold; font-size: 1.2rem;">
-                                ${sign}€${Math.abs(recurring.amount).toFixed(2)}
-                            </div>
-                            <button class="btn btn-secondary" onclick="deleteRecurring(${recurring.id})" style="padding: 8px 15px; margin: 5px 0 0 0; width: auto; font-size: 12px;">Supprimer</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            document.getElementById('recurringList').innerHTML = html || '<p style="text-align: center; color: rgba(255,255,255,0.5);">Aucune transaction récurrente</p>';
-        }
-
         function displayAssets() {
             let html = '';
             let totalValue = 0;
 
             appData.assets.forEach(asset => {
-                const value = asset.quantity * asset.price;
+                const price = asset.currentPrice || asset.price || 0;
+                const value = asset.quantity * price;
                 totalValue += value;
 
+                const change24h = asset.change24h || 0;
+                const changeColor = change24h >= 0 ? '#00FF88' : '#FF4757';
+                const changeIcon = change24h >= 0 ? '📈' : '📉';
+                
+                const lastUpdate = asset.lastPriceUpdate ? 
+                    new Date(asset.lastPriceUpdate).toLocaleTimeString('fr-FR', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    }) : 'Jamais';
+
+                const priceSource = asset.isAutoPrice !== false ? 
+                    (priceManager.isCrypto(asset.ticker || '') ? '🪙 Crypto' : '📊 Action') : 
+                    '✏️ Manuel';
+
                 html += `
-                    <div class="transaction-item">
-                        <div>
-                            <strong>${asset.name}</strong>
-                            <br><small>${asset.quantity} × €${asset.price.toFixed(2)}</small>
+                    <div class="transaction-item" style="flex-direction: column; align-items: stretch;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div>
+                                <strong>${asset.name}</strong>
+                                ${asset.ticker ? `<span style="background: rgba(0,122,239,0.2); padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; margin-left: 8px;">${asset.ticker}</span>` : ''}
+                                <br><small>${asset.quantity} × €${price.toFixed(2)} ${priceSource}</small>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="color: var(--theme-primary); font-weight: bold; font-size: 1.2rem;">€${value.toFixed(2)}</div>
+                                ${change24h !== 0 ? `<small style="color: ${changeColor};">${changeIcon} ${change24h.toFixed(2)}%</small>` : ''}
+                            </div>
                         </div>
-                        <div>
-                            <div style="color: var(--theme-primary); font-weight: bold; font-size: 1.2rem;">€${value.toFixed(2)}</div>
-                            <button class="btn btn-secondary" onclick="deleteAsset(${asset.id})" style="padding: 5px 10px; font-size: 12px; width: auto; margin: 5px 0 0 0;">Supprimer</button>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <small style="opacity: 0.7;">
+                                ${asset.isAutoPrice !== false ? `Mis à jour: ${lastUpdate}` : 'Prix manuel'}
+                            </small>
+                            <div style="display: flex; gap: 10px;">
+                                ${asset.isAutoPrice !== false ? `
+                                    <button class="btn btn-secondary" onclick="refreshAssetPrice('${asset.ticker}', ${asset.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">🔄</button>
+                                ` : ''}
+                                <button class="btn btn-secondary" onclick="editAsset(${asset.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">✏️</button>
+                                <button class="btn btn-secondary" onclick="deleteAsset(${asset.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">🗑️</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1812,6 +2429,46 @@
 
             document.getElementById('assetsList').innerHTML = html || '<p style="text-align: center; color: rgba(255,255,255,0.5);">Aucun actif</p>';
             document.getElementById('portfolioTotal').textContent = `€${totalValue.toFixed(2)}`;
+        }
+
+        async function refreshAssetPrice(ticker, assetId) {
+            if (!ticker) return;
+            
+            console.log(`🔄 Rafraîchissement manuel du prix pour ${ticker}...`);
+            
+            try {
+                const priceData = await priceManager.fetchAssetPrice(ticker);
+                
+                // Mettre à jour l'actif
+                const asset = appData.assets.find(a => a.id === assetId);
+                if (asset) {
+                    asset.currentPrice = priceData.price;
+                    asset.change24h = priceData.change24h;
+                    asset.lastPriceUpdate = priceData.lastUpdate;
+                    
+                    saveData();
+                    displayAssets();
+                    updateDisplay();
+                    
+                    console.log(`✅ Prix rafraîchi pour ${ticker}: €${priceData.price.toFixed(2)}`);
+                }
+            } catch (error) {
+                alert(`Erreur lors du rafraîchissement du prix de ${ticker}:\n${error.message}`);
+                console.error('Erreur rafraîchissement:', error);
+            }
+        }
+
+        function editAsset(assetId) {
+            const asset = appData.assets.find(a => a.id === assetId);
+            if (!asset) return;
+
+            const newQuantity = prompt(`Nouvelle quantité pour ${asset.name}:`, asset.quantity);
+            if (newQuantity && !isNaN(newQuantity)) {
+                asset.quantity = parseFloat(newQuantity);
+                saveData();
+                displayAssets();
+                updateDisplay();
+            }
         }
 
         function calculateClassicFire() {
@@ -1845,40 +2502,6 @@
             };
         }
 
-        function calculateSpeculativeFire() {
-            const monthlyIncome = parseFloat(document.getElementById('speculativeMonthlyIncome').value) || 0;
-            const cagr = parseFloat(document.getElementById('speculativeCagr').value) / 100 || 0.07;
-            const duration = parseFloat(document.getElementById('speculativeDuration').value) || 30;
-
-            if (monthlyIncome <= 0 || cagr <= 0) {
-                alert('Veuillez entrer des valeurs valides');
-                return;
-            }
-
-            const annualIncome = monthlyIncome * 12;
-            const requiredCapital = annualIncome / cagr;
-            const currentAssets = calculateTotalAssets();
-            const progress = (currentAssets / requiredCapital) * 100;
-
-            document.getElementById('speculativeRequiredCapital').textContent = `€${requiredCapital.toLocaleString()}`;
-            document.getElementById('speculativeAnnualIncome').textContent = `€${annualIncome.toLocaleString()}`;
-            document.getElementById('speculativeCagrDisplay').textContent = `${(cagr * 100).toFixed(1)}%`;
-            document.getElementById('speculativeDurationDisplay').textContent = `${duration} ans`;
-            document.getElementById('speculativeProgress').style.width = `${Math.min(progress, 100)}%`;
-            document.getElementById('speculativeProgressText').textContent = `${progress.toFixed(1)}% (€${currentAssets.toLocaleString()})`;
-
-            document.getElementById('speculativeFireResult').style.display = 'block';
-
-            window.currentSpeculativeResult = {
-                type: 'speculative',
-                monthlyIncome,
-                cagr: cagr * 100,
-                duration,
-                requiredCapital,
-                annualIncome
-            };
-        }
-
         function saveClassicFireGoal() {
             if (!window.currentClassicResult) {
                 alert('Veuillez d\'abord calculer votre simulation');
@@ -1903,30 +2526,6 @@
             alert('Objectif FIRE sauvegardé !');
         }
 
-        function saveSpeculativeFireGoal() {
-            if (!window.currentSpeculativeResult) {
-                alert('Veuillez d\'abord calculer votre simulation');
-                return;
-            }
-
-            const name = prompt('Nom de cet objectif FIRE:', `FIRE Spéculatif - €${window.currentSpeculativeResult.monthlyIncome}/mois`);
-            if (!name) return;
-
-            const goal = {
-                id: Date.now(),
-                name: name,
-                ...window.currentSpeculativeResult,
-                createdDate: new Date().toISOString().split('T')[0]
-            };
-
-            if (!appData.fireGoals) appData.fireGoals = [];
-            appData.fireGoals.push(goal);
-            saveData();
-            displayFireGoals();
-            updateCarousel();
-            alert('Objectif FIRE sauvegardé !');
-        }
-
         function displayFireGoals() {
             if (!appData.fireGoals) appData.fireGoals = [];
 
@@ -1938,11 +2537,11 @@
                 const remaining = Math.max(0, goal.requiredCapital - currentAssets);
 
                 html += `
-                    <div class="fire-goal-item ${goal.type}">
+                    <div class="fire-goal-item">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                             <h4 style="margin: 0;">${goal.name}</h4>
-                            <span style="background: ${goal.type === 'classic' ? 'rgba(0,255,136,0.2)' : 'rgba(255,165,0,0.2)'}; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">
-                                ${goal.type === 'classic' ? '🔹 Classique' : '🔹 Spéculatif'}
+                            <span style="background: rgba(0,255,136,0.2); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">
+                                🔹 Classique
                             </span>
                         </div>
 
@@ -1952,10 +2551,7 @@
                                 <p><strong>🎯 Capital requis:</strong> €${goal.requiredCapital.toLocaleString()}</p>
                             </div>
                             <div>
-                                ${goal.type === 'classic' ?
-                                    `<p><strong>📉 Taux retrait:</strong> ${goal.withdrawalRate}%</p>` :
-                                    `<p><strong>📈 CAGR:</strong> ${goal.cagr}%</p>`
-                                }
+                                <p><strong>📉 Taux retrait:</strong> ${goal.withdrawalRate}%</p>
                                 <p><strong>💸 Reste:</strong> €${remaining.toLocaleString()}</p>
                             </div>
                         </div>
@@ -1986,7 +2582,7 @@
         }
 
         function toggleFireForm(type) {
-            const formId = type === 'classic' ? 'classicFireForm' : 'speculativeFireForm';
+            const formId = 'classicFireForm';
             const form = document.getElementById(formId);
 
             if (form.style.display === 'none' || form.style.display === '') {
@@ -2107,20 +2703,8 @@
         function resetClassicFire() {
             document.getElementById('classicMonthlyIncome').value = '1500';
             document.getElementById('classicWithdrawalRate').value = '4';
-
             document.getElementById('classicFireResult').style.display = 'none';
-
             window.currentClassicResult = null;
-        }
-
-        function resetSpeculativeFire() {
-            document.getElementById('speculativeMonthlyIncome').value = '1500';
-            document.getElementById('speculativeCagr').value = '70';
-            document.getElementById('speculativeDuration').value = '30';
-
-            document.getElementById('speculativeFireResult').style.display = 'none';
-
-            window.currentSpeculativeResult = null;
         }
 
         function resetCompoundInterest() {
@@ -2128,7 +2712,6 @@
             document.getElementById('monthlyAmount').value = '';
             document.getElementById('annualRate').value = '';
             document.getElementById('years').value = '';
-
             document.getElementById('simulationResults').innerHTML = '';
         }
 
@@ -2141,6 +2724,7 @@
 
                 displayRecentTransactions();
                 displayAllTransactions();
+                displayBitcoinSummary();
                 generateCalendar();
 
                 if (window.selectedDateForTransaction) {
@@ -2149,14 +2733,6 @@
 
                 alert('Transaction supprimée !');
             }
-        }
-
-        function deleteRecurring(id) {
-            appData.recurring = appData.recurring.filter(r => r.id !== id);
-            saveData();
-            displayRecurring();
-            generateCalendar();
-            updateDisplay();
         }
 
         function deleteAsset(id) {
@@ -2184,17 +2760,29 @@
             const savedData = localStorage.getItem('moneyflowData');
             if (savedData) {
                 try {
-                    appData = JSON.parse(savedData);
+                    const parsedData = JSON.parse(savedData);
+                    appData = {
+                        transactions: parsedData.transactions || [],
+                        assets: parsedData.assets || [],
+                        fireGoals: parsedData.fireGoals || [],
+                        categories: parsedData.categories || ['bitcoin', 'alimentation', 'transport', 'logement', 'loisirs', 'santé', 'shopping', 'divers'],
+                        settings: parsedData.settings || { currentBalance: 0 }
+                    };
                 } catch (e) {
                     console.error('Erreur lors du chargement des données:', e);
                     appData = {
                         transactions: [],
-                        recurring: [],
                         assets: [],
                         fireGoals: [],
+                        categories: ['bitcoin', 'alimentation', 'transport', 'logement', 'loisirs', 'santé', 'shopping', 'divers'],
                         settings: { currentBalance: 0 }
                     };
                 }
+            }
+            
+            // S'assurer que la catégorie bitcoin existe toujours
+            if (!appData.categories.includes('bitcoin')) {
+                appData.categories.unshift('bitcoin');
             }
         }
 
@@ -2222,7 +2810,19 @@
                     const importedData = JSON.parse(e.target.result);
 
                     if (importedData.transactions && Array.isArray(importedData.transactions)) {
-                        appData = importedData;
+                        appData = {
+                            transactions: importedData.transactions || [],
+                            assets: importedData.assets || [],
+                            fireGoals: importedData.fireGoals || [],
+                            categories: importedData.categories || ['bitcoin', 'alimentation', 'transport', 'logement', 'loisirs', 'santé', 'shopping', 'divers'],
+                            settings: importedData.settings || { currentBalance: 0 }
+                        };
+                        
+                        // S'assurer que la catégorie bitcoin existe
+                        if (!appData.categories.includes('bitcoin')) {
+                            appData.categories.unshift('bitcoin');
+                        }
+                        
                         saveData();
                         updateDisplay();
                         alert('Données importées avec succès !');
@@ -2242,28 +2842,25 @@
                 localStorage.removeItem('moneyflowData');
                 appData = {
                     transactions: [],
-                    recurring: [],
                     assets: [],
                     fireGoals: [],
+                    categories: ['bitcoin', 'alimentation', 'transport', 'logement', 'loisirs', 'santé', 'shopping', 'divers'],
                     settings: { currentBalance: 0 }
                 };
                 updateDisplay();
                 updateCarousel();
+                loadCategories();
+                displayCategories();
                 alert('Toutes les données ont été effacées.');
             }
         }
 
         function updateDisplay() {
             const balance = calculateCurrentBalance();
-            const totalIncome = calculateTotalIncome();
-            const totalExpenses = calculateTotalExpenses();
             const totalAssets = calculateTotalAssets();
 
             document.getElementById('headerBalance').textContent = `€${balance.toLocaleString()}`;
-
             document.getElementById('currentBalance').textContent = `€${balance.toLocaleString()}`;
-            document.getElementById('totalIncome').textContent = `€${totalIncome.toLocaleString()}`;
-            document.getElementById('totalExpenses').textContent = `€${totalExpenses.toLocaleString()}`;
             document.getElementById('totalAssets').textContent = `€${totalAssets.toLocaleString()}`;
 
             const dataInfo = document.getElementById('dataInfo');
@@ -2276,15 +2873,18 @@
                     return transactionDate > today;
                 }).length;
 
+                const bitcoinTransactions = getBitcoinTransactions().length;
+
                 dataInfo.innerHTML = `
                     <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;">
                         <h4>État des données</h4>
                         <p>Transactions: ${appData.transactions.length}</p>
                         <p>Transactions futures: ${futureTransactions} 📅</p>
-                        <p>Récurrents: ${appData.recurring.length}</p>
+                        <p>Achats Bitcoin: ${bitcoinTransactions} ₿</p>
                         <p>Actifs: ${appData.assets.length}</p>
                         <p>Objectifs FIRE: ${appData.fireGoals?.length || 0}</p>
-                        <p>Dernière sauvegarde: ${new Date().toLocaleString()}</p>
+                        <p>Catégories: ${appData.categories.length}</p>
+                        <p>Dernière sauvegarde: ${new Date().toLocaleString()}
                     </div>
                 `;
             }
@@ -2292,12 +2892,7 @@
             displayFireGoals();
         }
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-              .then(reg => console.log('Service Worker enregistré'))
-              .catch(err => console.log('Erreur Service Worker:', err));
-        }
-
+        // Fonctions globales pour l'interface
         window.showPage = showPage;
         window.showModal = showModal;
         window.hideModal = hideModal;
@@ -2306,11 +2901,8 @@
         window.addTransactionForDate = addTransactionForDate;
         window.deleteTransaction = deleteTransaction;
         window.calculateClassicFire = calculateClassicFire;
-        window.calculateSpeculativeFire = calculateSpeculativeFire;
         window.saveClassicFireGoal = saveClassicFireGoal;
-        window.saveSpeculativeFireGoal = saveSpeculativeFireGoal;
         window.calculateCompoundInterest = calculateCompoundInterest;
-        window.deleteRecurring = deleteRecurring;
         window.deleteAsset = deleteAsset;
         window.deleteFireGoal = deleteFireGoal;
         window.exportData = exportData;
@@ -2319,9 +2911,21 @@
         window.toggleFireForm = toggleFireForm;
         window.toggleCompoundForm = toggleCompoundForm;
         window.resetClassicFire = resetClassicFire;
-        window.resetSpeculativeFire = resetSpeculativeFire;
         window.resetCompoundInterest = resetCompoundInterest;
+        window.refreshAssetPrice = refreshAssetPrice;
+        window.editAsset = editAsset;
+        window.toggleRecurringOptions = toggleRecurringOptions;
+        window.toggleBitcoinQuantity = toggleBitcoinQuantity;
+        window.addCategory = addCategory;
+        window.deleteCategory = deleteCategory;
         window.goToSlide = goToSlide;
+
+        // Service Worker pour PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+              .then(reg => console.log('Service Worker enregistré'))
+              .catch(err => console.log('Erreur Service Worker:', err));
+        }
     </script>
 </body>
-</html>
+</html></p>
