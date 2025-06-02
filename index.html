@@ -783,18 +783,18 @@
 <body>
     <div class="app-container">
         <div class="header">
-            <div class="logo">💰 MoneyFlow</div>
+            <div class="logo">MoneyFlow</div>
             <div class="balance-amount-header" id="headerBalance">€0</div>
             <div class="balance-info" id="headerInfo">Gérez vos finances avec style</div>
         </div>
 
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showPage('dashboard')">📊 Dashboard</button>
-            <button class="nav-tab" onclick="showPage('calendar')">📅 Calendrier</button>
-            <button class="nav-tab" onclick="showPage('bitcoin')">₿ Bitcoin</button>
-            <button class="nav-tab" onclick="showPage('tools')">🛠️ Outils</button>
-            <button class="nav-tab" onclick="showPage('portfolio')">📈 Actifs</button>
-            <button class="nav-tab" onclick="showPage('settings')">⚙️ Paramètres</button>
+            <button class="nav-tab active" onclick="showPage('dashboard')">Dashboard</button>
+            <button class="nav-tab" onclick="showPage('calendar')">Calendrier</button>
+            <button class="nav-tab" onclick="showPage('bitcoin')">Bitcoin</button>
+            <button class="nav-tab" onclick="showPage('tools')">Outils</button>
+            <button class="nav-tab" onclick="showPage('portfolio')">Actifs</button>
+            <button class="nav-tab" onclick="showPage('settings')">Paramètres</button>
         </div>
 
         <div class="content">
@@ -806,7 +806,6 @@
                 </div>
 
                 <div class="card animate-in">
-                    <h3>💼 Aperçu Financier</h3>
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-number" id="currentBalance">€0</div>
@@ -817,12 +816,9 @@
                             <div class="stat-label">Total Actifs</div>
                         </div>
                     </div>
-
-                    <button class="btn" onclick="showModal('transactionModal')">+ Ajouter Transaction</button>
                 </div>
 
                 <div class="card bitcoin-card animate-in" id="bitcoinSummaryCard">
-                    <h3>₿ Bitcoin Stack</h3>
                     <div id="bitcoinSummary">
                         <p style="text-align: center; color: #666;">Aucun achat Bitcoin enregistré</p>
                     </div>
@@ -830,24 +826,17 @@
                 </div>
 
                 <div class="card animate-in">
-                    <h3>🎯 Objectifs FIRE</h3>
-                    <div id="fireGoalsSummary">
-                        <p style="text-align: center; color: #666;">Aucun objectif FIRE configuré</p>
-                    </div>
-                    <button class="btn" onclick="showPage('tools')">Configurer FIRE</button>
-                </div>
-
-                <div class="card animate-in">
-                    <h3>📅 Transactions Récentes</h3>
-                    <div id="recentTransactions"></div>
-                    <button class="btn btn-secondary" onclick="showPage('calendar')">Voir le Calendrier</button>
+                    <h3>Transactions Récentes</h3>
+                    <button class="btn btn-secondary" onclick="toggleRecentTransactions()" id="toggleRecentBtn">Afficher les transactions</button>
+                    <div id="recentTransactions" style="display: none; margin-top: 15px;"></div>
+                    <button class="btn btn-secondary" onclick="showPage('calendar')" style="margin-top: 15px;">Voir le Calendrier</button>
                 </div>
             </div>
 
             <!-- Calendrier -->
             <div id="calendar" class="page">
                 <div class="card">
-                    <h3>📅 Calendrier Financier</h3>
+                    <h3>Calendrier Financier</h3>
                     <button class="btn" onclick="showModal('transactionModal')">+ Ajouter Transaction</button>
                     <div id="calendarView"></div>
                 </div>
@@ -861,11 +850,11 @@
             <!-- Bitcoin Page -->
             <div id="bitcoin" class="page">
                 <div class="card bitcoin-card">
-                    <h3>₿ Bitcoin Stack</h3>
+                    <h3>Bitcoin Stack</h3>
                     <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-number" id="bitcoinStack" style="color: var(--bitcoin-color);">0 BTC</div>
-                            <div class="stat-label">Stack Total</div>
+                            <div class="stat-number" id="bitcoinStack" style="color: var(--bitcoin-color);">0</div>
+                            <div class="stat-label">Total</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-number" id="bitcoinValue" style="color: var(--bitcoin-color);">€0</div>
@@ -888,14 +877,14 @@
                 </div>
 
                 <div class="card">
-                    <h3>📈 Évolution du Stack</h3>
+                    <h3>Évolution du Stack</h3>
                     <div class="bitcoin-chart" id="bitcoinChart">
                         <p style="text-align: center; color: #666;">Graphique d'évolution du stack</p>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3>📊 Historique des Achats Bitcoin</h3>
+                    <h3>Historique des Achats Bitcoin</h3>
                     <div id="bitcoinTransactions"></div>
                 </div>
             </div>
@@ -903,12 +892,12 @@
             <!-- Outils -->
             <div id="tools" class="page">
                 <div class="card">
-                    <h3>🛠️ Outils Financiers</h3>
+                    <h3>Outils Financiers</h3>
 
                     <div class="fire-simulator-section">
-                        <h4>🔹 FIRE Classique (Règle des 4%)</h4>
+                        <h4>FIRE Classique (Règle des 4%)</h4>
                         <p style="opacity: 0.8; margin-bottom: 20px;">Capital stable, taux de retrait fixe sans croissance</p>
-                        <button class="btn" onclick="toggleFireForm('classic')">📊 Ouvrir le Simulateur</button>
+                        <button class="btn" onclick="toggleFireForm('classic')">Ouvrir le Simulateur</button>
 
                         <div id="classicFireForm" style="display: none; margin-top: 20px;">
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
@@ -921,7 +910,7 @@
                                     <input type="number" class="form-input" id="classicWithdrawalRate" placeholder="4" value="4" step="0.1">
                                 </div>
                             </div>
-                            <button class="btn" onclick="calculateClassicFire()">📊 Calculer</button>
+                            <button class="btn" onclick="calculateClassicFire()">Calculer</button>
                         </div>
 
                         <div id="classicFireResult" style="display: none;">
@@ -931,30 +920,30 @@
                                     <p>Capital requis</p>
                                 </div>
                                 <div class="result-details">
-                                    <p><strong>📅 Revenu annuel:</strong> <span id="classicAnnualIncome">€0</span></p>
-                                    <p><strong>📉 Taux de retrait:</strong> <span id="classicWithdrawalDisplay">4%</span></p>
+                                    <p><strong>Revenu annuel:</strong> <span id="classicAnnualIncome">€0</span></p>
+                                    <p><strong>Taux de retrait:</strong> <span id="classicWithdrawalDisplay">4%</span></p>
                                     <div class="progress-section">
                                         <div class="progress-bar">
                                             <div class="progress-fill" id="classicProgress" style="width: 0%"></div>
                                         </div>
                                         <p><strong>Progression:</strong> <span id="classicProgressText">0%</span></p>
                                     </div>
-                                    <button class="btn btn-secondary" onclick="saveClassicFireGoal()">💾 Sauver comme Objectif</button>
-                                    <button class="btn btn-secondary" onclick="resetClassicFire()" style="margin-top: 10px;">🔄 Réinitialiser</button>
+                                    <button class="btn btn-secondary" onclick="saveClassicFireGoal()">Sauver comme Objectif</button>
+                                    <button class="btn btn-secondary" onclick="resetClassicFire()" style="margin-top: 10px;">Réinitialiser</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="saved-goals-section">
-                        <h3>🏆 Mes Objectifs FIRE</h3>
+                        <h3>Mes Objectifs FIRE</h3>
                         <div id="fireGoalsList"></div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3>🧮 Simulateur d'Intérêts Composés</h3>
-                    <button class="btn" onclick="toggleCompoundForm()">📈 Ouvrir le Simulateur</button>
+                    <h3>Simulateur d'Intérêts Composés</h3>
+                    <button class="btn" onclick="toggleCompoundForm()">Ouvrir le Simulateur</button>
 
                     <div id="compoundInterestForm" style="display: none; margin-top: 20px;">
                         <div class="form-group">
@@ -983,7 +972,7 @@
             <!-- Portefeuille Financier -->
             <div id="portfolio" class="page">
                 <div class="card">
-                    <h3>📈 Portefeuille Financier</h3>
+                    <h3>Portefeuille Financier</h3>
                     <button class="btn" onclick="showModal('assetModal')">+ Ajouter Actif</button>
 
                     <div class="stat-card" style="margin: 20px 0;">
@@ -998,10 +987,10 @@
             <!-- Paramètres -->
             <div id="settings" class="page">
                 <div class="card">
-                    <h3>⚙️ Paramètres</h3>
+                    <h3>Paramètres</h3>
                     
                     <div style="margin-bottom: 30px;">
-                        <h4>📝 Gestion des Catégories</h4>
+                        <h4>Gestion des Catégories</h4>
                         <div id="categoriesList"></div>
                         <div style="display: flex; gap: 10px; margin-top: 15px;">
                             <input type="text" id="newCategoryInput" placeholder="Nouvelle catégorie" class="form-input" style="margin-bottom: 0;">
@@ -1010,11 +999,11 @@
                     </div>
 
                     <div>
-                        <h4>💾 Gestion des Données</h4>
-                        <button class="btn" onclick="exportData()">📤 Exporter JSON</button>
-                        <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Importer JSON</button>
+                        <h4>Gestion des Données</h4>
+                        <button class="btn" onclick="exportData()">Exporter JSON</button>
+                        <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Importer JSON</button>
                         <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
-                        <button class="btn btn-secondary" onclick="clearAllData()">🗑️ Effacer Toutes les Données</button>
+                        <button class="btn btn-secondary" onclick="clearAllData()">Effacer Toutes les Données</button>
                         <div id="dataInfo"></div>
                     </div>
                 </div>
@@ -1057,10 +1046,10 @@
                     </select>
                 </div>
                 <div class="bitcoin-quantity-group" id="bitcoinQuantityGroup">
-                    <label class="form-label">🟡 Quantité de Bitcoin achetée</label>
+                    <label class="form-label">Quantité de Bitcoin achetée</label>
                     <input type="number" class="form-input" id="bitcoinQuantity" step="0.00000001" placeholder="0.001">
                     <small style="opacity: 0.7; margin-top: 5px; display: block;">
-                        💡 Entrez la quantité de Bitcoin achetée (ex: 0.001, 0.5, 1.2)
+                        Entrez la quantité de Bitcoin achetée (ex: 0.001, 0.5, 1.2)
                     </small>
                 </div>
                 <div class="form-group">
@@ -1121,14 +1110,14 @@
                     <label class="form-label">Ticker / Symbole</label>
                     <input type="text" class="form-input" id="assetTicker" placeholder="ex: BTC, AAPL, MSTR" required style="text-transform: uppercase;">
                     <small style="opacity: 0.7; font-size: 0.8rem; margin-top: 5px; display: block;">
-                        💡 Entrez le symbole (ex: BTC, ETH, AAPL, TSLA). Le prix sera récupéré automatiquement.
+                        Entrez le symbole (ex: BTC, ETH, AAPL, TSLA). Le prix sera récupéré automatiquement.
                     </small>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Quantité détenue</label>
                     <input type="number" class="form-input" id="assetQuantity" step="0.00000001" placeholder="ex: 0.5, 100" required>
                 </div>
-                <button type="submit" class="btn">🔄 Ajouter avec Prix Auto</button>
+                <button type="submit" class="btn">Ajouter avec Prix Auto</button>
             </form>
         </div>
     </div>
@@ -1342,7 +1331,7 @@
             async updateAllAssetPrices() {
                 if (!appData.assets || appData.assets.length === 0) return;
 
-                console.log('🔄 Mise à jour des prix des actifs...');
+                console.log('Mise à jour des prix des actifs...');
                 
                 for (const asset of appData.assets) {
                     if (asset.ticker) {
@@ -1351,9 +1340,9 @@
                             asset.currentPrice = priceData.price;
                             asset.change24h = priceData.change24h;
                             asset.lastPriceUpdate = priceData.lastUpdate;
-                            console.log(`✅ Prix mis à jour pour ${asset.ticker}: €${priceData.price.toFixed(2)}`);
+                            console.log(`Prix mis à jour pour ${asset.ticker}: €${priceData.price.toFixed(2)}`);
                         } catch (error) {
-                            console.error(`❌ Erreur mise à jour ${asset.ticker}:`, error);
+                            console.error(`Erreur mise à jour ${asset.ticker}:`, error);
                         }
                     }
                 }
@@ -1383,7 +1372,7 @@
                     this.updateAllAssetPrices();
                 }, this.updateInterval);
                 
-                console.log('🕐 Mises à jour automatiques démarrées (toutes les 10 minutes)');
+                console.log('Mises à jour automatiques démarrées (toutes les 10 minutes)');
             }
 
             // Arrêter les mises à jour automatiques
@@ -1391,7 +1380,7 @@
                 if (priceUpdateInterval) {
                     clearInterval(priceUpdateInterval);
                     priceUpdateInterval = null;
-                    console.log('⏹️ Mises à jour automatiques arrêtées');
+                    console.log('Mises à jour automatiques arrêtées');
                 }
             }
         }
@@ -1456,9 +1445,9 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div style="text-align: center;">
                         <div style="color: var(--bitcoin-color); font-weight: bold; font-size: 1.2rem;">
-                            ${stats.totalStack.toFixed(8)} BTC
+                            ${stats.totalStack.toFixed(8)}
                         </div>
-                        <small>Stack Total</small>
+                        <small>Total</small>
                     </div>
                     <div style="text-align: center;">
                         <div style="color: ${pnlColor}; font-weight: bold; font-size: 1.2rem;">
@@ -1474,7 +1463,7 @@
             const stats = calculateBitcoinStats();
             
             // Mettre à jour les statistiques
-            document.getElementById('bitcoinStack').textContent = `${stats.totalStack.toFixed(8)} BTC`;
+            document.getElementById('bitcoinStack').textContent = `${stats.totalStack.toFixed(8)}`;
             document.getElementById('bitcoinValue').textContent = `€${stats.currentValue.toFixed(0)}`;
             document.getElementById('bitcoinAvgPrice').textContent = `€${stats.avgPrice.toFixed(0)}`;
             
@@ -1598,7 +1587,7 @@
                 option.value = category;
                 option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
                 if (category === 'bitcoin') {
-                    option.textContent = '₿ Bitcoin';
+                    option.textContent = 'Bitcoin';
                 }
                 categorySelect.appendChild(option);
             });
@@ -1610,7 +1599,7 @@
 
             let html = '';
             appData.categories.forEach(category => {
-                const displayName = category === 'bitcoin' ? '₿ Bitcoin' : category.charAt(0).toUpperCase() + category.slice(1);
+                const displayName = category === 'bitcoin' ? 'Bitcoin' : category.charAt(0).toUpperCase() + category.slice(1);
                 const canDelete = category !== 'bitcoin'; // Bitcoin ne peut pas être supprimée
                 
                 html += `
@@ -1746,8 +1735,8 @@
             } else if (pageName === 'dashboard') {
                 updateCarousel();
                 startCarousel();
-                displayRecentTransactions();
                 displayBitcoinSummary();
+                // Les transactions récentes ne s'affichent plus automatiquement
             } else {
                 stopCarousel();
             }
@@ -2036,7 +2025,7 @@
                     hideModal('assetModal');
                     document.getElementById('assetForm').reset();
                     
-                    console.log(`✅ Actif ${assetTicker} ajouté avec prix: €${priceData.price.toFixed(2)}`);
+                    console.log(`Actif ${assetTicker} ajouté avec prix: €${priceData.price.toFixed(2)}`);
                 })
                 .catch(error => {
                     // En cas d'erreur, permettre l'ajout manuel
@@ -2068,12 +2057,12 @@
 
         function showLoadingForAsset(assetId) {
             // Afficher un indicateur de chargement si nécessaire
-            console.log(`🔄 Récupération du prix pour l'actif ${assetId}...`);
+            console.log(`Récupération du prix pour l'actif ${assetId}...`);
         }
 
         function hideLoadingForAsset(assetId) {
             // Masquer l'indicateur de chargement
-            console.log(`✅ Chargement terminé pour l'actif ${assetId}`);
+            console.log(`Chargement terminé pour l'actif ${assetId}`);
         }
 
         function calculateCurrentBalance() {
@@ -2233,14 +2222,14 @@
                         <div class="transaction-item ${transaction.type} ${isBitcoin ? 'bitcoin' : ''}">
                             <div>
                                 <strong>${transaction.name}</strong>
-                                ${isBitcoin ? ` (₿ ${transaction.bitcoinQuantity?.toFixed(8)} BTC)` : ''}
+                                ${isBitcoin ? ` (${transaction.bitcoinQuantity?.toFixed(8)} BTC)` : ''}
                                 <br><small>${transaction.category || 'Sans catégorie'}</small>
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <div style="color: ${isBitcoin ? 'var(--bitcoin-color)' : color}; font-weight: bold; font-size: 1.2rem;">
                                     ${sign}€${Math.abs(transaction.amount).toFixed(2)}
                                 </div>
-                                <button class="btn btn-secondary" onclick="deleteTransaction(${transaction.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">🗑️</button>
+                                <button class="btn btn-secondary" onclick="deleteTransaction(${transaction.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">Supprimer</button>
                             </div>
                         </div>
                     `;
@@ -2262,13 +2251,13 @@
 
                 const modalTitle = document.getElementById('transactionModalTitle');
                 if (selectedDate > today) {
-                    modalTitle.textContent = `📅 Planifier pour le ${window.selectedDateForTransaction}`;
+                    modalTitle.textContent = `Planifier pour le ${window.selectedDateForTransaction}`;
                     modalTitle.style.color = '#00FF88';
                 } else if (selectedDate.getTime() === today.getTime()) {
-                    modalTitle.textContent = `✨ Transaction d'aujourd'hui`;
+                    modalTitle.textContent = `Transaction d'aujourd'hui`;
                     modalTitle.style.color = '#007AEF';
                 } else {
-                    modalTitle.textContent = `📝 Transaction du ${window.selectedDateForTransaction}`;
+                    modalTitle.textContent = `Transaction du ${window.selectedDateForTransaction}`;
                     modalTitle.style.color = '#FFF';
                 }
             }
@@ -2303,7 +2292,7 @@
                         <div class="transaction-item ${transaction.type} ${isBitcoin ? 'bitcoin' : ''}">
                             <div>
                                 <strong>${transaction.name}</strong>
-                                ${isBitcoin ? ` (₿ ${transaction.bitcoinQuantity?.toFixed(8)} BTC)` : ''}
+                                ${isBitcoin ? ` (${transaction.bitcoinQuantity?.toFixed(8)} BTC)` : ''}
                                 <br><small>${transaction.date} - ${transaction.category || 'Sans catégorie'}</small>
                             </div>
                             <div style="color: ${isBitcoin ? 'var(--bitcoin-color)' : color}; font-weight: bold; font-size: 1.2rem;">
@@ -2353,15 +2342,15 @@
                         <div class="transaction-item ${transaction.type} ${isBitcoin ? 'bitcoin' : ''}">
                             <div>
                                 <strong>${transaction.name}</strong>
-                                ${isToday ? ' ✨' : ''}
-                                ${isBitcoin ? ` (₿ ${transaction.bitcoinQuantity?.toFixed(8)} BTC)` : ''}
+                                ${isToday ? ' [Aujourd\'hui]' : ''}
+                                ${isBitcoin ? ` (${transaction.bitcoinQuantity?.toFixed(8)} BTC)` : ''}
                                 <br><small>${dateLabel} - ${transaction.category || 'Sans catégorie'}</small>
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <div style="color: ${isBitcoin ? 'var(--bitcoin-color)' : color}; font-weight: bold; font-size: 1.2rem;">
                                     ${sign}€${Math.abs(transaction.amount).toFixed(2)}
                                 </div>
-                                <button class="btn btn-secondary" onclick="deleteTransaction(${transaction.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">🗑️</button>
+                                <button class="btn btn-secondary" onclick="deleteTransaction(${transaction.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">Supprimer</button>
                             </div>
                         </div>
                     `;
@@ -2385,7 +2374,7 @@
 
                 const change24h = asset.change24h || 0;
                 const changeColor = change24h >= 0 ? '#00FF88' : '#FF4757';
-                const changeIcon = change24h >= 0 ? '📈' : '📉';
+                const changeIcon = change24h >= 0 ? '[+]' : '[-]';
                 
                 const lastUpdate = asset.lastPriceUpdate ? 
                     new Date(asset.lastPriceUpdate).toLocaleTimeString('fr-FR', { 
@@ -2394,8 +2383,8 @@
                     }) : 'Jamais';
 
                 const priceSource = asset.isAutoPrice !== false ? 
-                    (priceManager.isCrypto(asset.ticker || '') ? '🪙 Crypto' : '📊 Action') : 
-                    '✏️ Manuel';
+                    (priceManager.isCrypto(asset.ticker || '') ? 'Crypto' : 'Action') : 
+                    'Manuel';
 
                 html += `
                     <div class="transaction-item" style="flex-direction: column; align-items: stretch;">
@@ -2417,10 +2406,10 @@
                             </small>
                             <div style="display: flex; gap: 10px;">
                                 ${asset.isAutoPrice !== false ? `
-                                    <button class="btn btn-secondary" onclick="refreshAssetPrice('${asset.ticker}', ${asset.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">🔄</button>
+                                    <button class="btn btn-secondary" onclick="refreshAssetPrice('${asset.ticker}', ${asset.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">Rafraîchir</button>
                                 ` : ''}
-                                <button class="btn btn-secondary" onclick="editAsset(${asset.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">✏️</button>
-                                <button class="btn btn-secondary" onclick="deleteAsset(${asset.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">🗑️</button>
+                                <button class="btn btn-secondary" onclick="editAsset(${asset.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">Modifier</button>
+                                <button class="btn btn-secondary" onclick="deleteAsset(${asset.id})" style="padding: 5px 10px; font-size: 12px; width: auto;">Supprimer</button>
                             </div>
                         </div>
                     </div>
@@ -2434,7 +2423,7 @@
         async function refreshAssetPrice(ticker, assetId) {
             if (!ticker) return;
             
-            console.log(`🔄 Rafraîchissement manuel du prix pour ${ticker}...`);
+            console.log(`Rafraîchissement manuel du prix pour ${ticker}...`);
             
             try {
                 const priceData = await priceManager.fetchAssetPrice(ticker);
@@ -2450,7 +2439,7 @@
                     displayAssets();
                     updateDisplay();
                     
-                    console.log(`✅ Prix rafraîchi pour ${ticker}: €${priceData.price.toFixed(2)}`);
+                    console.log(`Prix rafraîchi pour ${ticker}: €${priceData.price.toFixed(2)}`);
                 }
             } catch (error) {
                 alert(`Erreur lors du rafraîchissement du prix de ${ticker}:\n${error.message}`);
@@ -2541,18 +2530,18 @@
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                             <h4 style="margin: 0;">${goal.name}</h4>
                             <span style="background: rgba(0,255,136,0.2); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">
-                                🔹 Classique
+                                Classique
                             </span>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                             <div>
-                                <p><strong>💰 Objectif:</strong> €${goal.monthlyIncome}/mois</p>
-                                <p><strong>🎯 Capital requis:</strong> €${goal.requiredCapital.toLocaleString()}</p>
+                                <p><strong>Objectif:</strong> €${goal.monthlyIncome}/mois</p>
+                                <p><strong>Capital requis:</strong> €${goal.requiredCapital.toLocaleString()}</p>
                             </div>
                             <div>
-                                <p><strong>📉 Taux retrait:</strong> ${goal.withdrawalRate}%</p>
-                                <p><strong>💸 Reste:</strong> €${remaining.toLocaleString()}</p>
+                                <p><strong>Taux retrait:</strong> ${goal.withdrawalRate}%</p>
+                                <p><strong>Reste:</strong> €${remaining.toLocaleString()}</p>
                             </div>
                         </div>
 
@@ -2695,7 +2684,7 @@
                 </div>
             `;
 
-            html += '<button class="btn btn-secondary" onclick="resetCompoundInterest()" style="margin-top: 15px;">🔄 Réinitialiser</button>';
+            html += '<button class="btn btn-secondary" onclick="resetCompoundInterest()" style="margin-top: 15px;">Réinitialiser</button>';
 
             document.getElementById('simulationResults').innerHTML = html;
         }
@@ -2879,8 +2868,8 @@
                     <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;">
                         <h4>État des données</h4>
                         <p>Transactions: ${appData.transactions.length}</p>
-                        <p>Transactions futures: ${futureTransactions} 📅</p>
-                        <p>Achats Bitcoin: ${bitcoinTransactions} ₿</p>
+                        <p>Transactions futures: ${futureTransactions}</p>
+                        <p>Achats Bitcoin: ${bitcoinTransactions}</p>
                         <p>Actifs: ${appData.assets.length}</p>
                         <p>Objectifs FIRE: ${appData.fireGoals?.length || 0}</p>
                         <p>Catégories: ${appData.categories.length}</p>
@@ -2892,7 +2881,19 @@
             displayFireGoals();
         }
 
-        // Fonctions globales pour l'interface
+        function toggleRecentTransactions() {
+            const transactionsDiv = document.getElementById('recentTransactions');
+            const toggleBtn = document.getElementById('toggleRecentBtn');
+            
+            if (transactionsDiv.style.display === 'none') {
+                transactionsDiv.style.display = 'block';
+                toggleBtn.textContent = 'Masquer les transactions';
+                displayRecentTransactions();
+            } else {
+                transactionsDiv.style.display = 'none';
+                toggleBtn.textContent = 'Afficher les transactions';
+            }
+        }
         window.showPage = showPage;
         window.showModal = showModal;
         window.hideModal = hideModal;
@@ -2928,4 +2929,4 @@
         }
     </script>
 </body>
-</html></p>
+</html>
