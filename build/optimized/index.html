@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+    <title>Movo - Gestion Financière</title>
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Movo">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="stylesheet" href="styles.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="preload" href="app-core.min.js" as="script">
+    <script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
+</head>
+<body>
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-text">MOVO</div>
+    </div>
+    <div class="app-container">
+        <!-- Optimized content structure -->
+        <main class="main-content">
+            <div id="dashboard" class="page active">
+                <h1>Movo - Finance Management</h1>
+                <p>Loading optimized application...</p>
+            </div>
+        </main>
+    </div>
+    <script src="app-core.min.js"></script>
+    <script>
+        const link=document.createElement('link');
+        link.rel='stylesheet';
+        link.href='styles-extended.min.css';
+        link.media='print';
+        link.onload=function(){this.media='all'};
+        document.head.appendChild(link);
+    </script>
+</body>
+</html>
