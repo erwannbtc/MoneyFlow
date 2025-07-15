@@ -64,19 +64,6 @@
             html {
                 height: -webkit-fill-available;
             }
-
-            /* Fix spécifique pour la bottom-nav sur iOS */
-            .bottom-nav {
-                position: fixed !important;
-                bottom: 0 !important;
-                /* Force iOS to respect the fixed positioning */
-                -webkit-transform: translateZ(0);
-                transform: translateZ(0);
-                /* Prevent any layout shifts */
-                contain: layout style paint;
-                /* Ensure it stays above everything */
-                isolation: isolate;
-            }
         }
 
         /* Amélioration pour les appareils avec safe-area */
@@ -2523,7 +2510,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            z-index: 99999;
+            z-index: 9999;
             height: var(--bottom-nav-height);
             padding: 8px 20px calc(8px + var(--safe-area-bottom));
             background: rgba(10, 10, 11, 0.98);
@@ -2535,18 +2522,6 @@
             box-sizing: border-box;
             width: 100vw;
             max-width: 100vw;
-            /* Enhanced mobile support */
-            will-change: auto;
-            contain: layout style paint;
-            /* Prevent any external transforms */
-            transform-origin: center bottom;
-            /* Ensure it's always visible */
-            visibility: visible !important;
-            opacity: 1 !important;
-            /* Support for devices with safe areas */
-            padding-bottom: max(8px, calc(8px + var(--safe-area-bottom)));
-            /* Prevent scrolling under the nav */
-            overscroll-behavior: none;
         }
 
         .nav-items {
@@ -3756,66 +3731,6 @@
             input[type="url"] {
                 font-size: 16px !important;
             }
-        }
-
-        /* Additional fixes for bottom navigation visibility */
-        @media (max-width: 768px) {
-            /* Ensure bottom nav stays fixed on mobile */
-            .bottom-nav {
-                position: fixed !important;
-                bottom: 0 !important;
-                left: 0 !important;
-                right: 0 !important;
-                z-index: 999999 !important;
-                /* Force hardware acceleration */
-                -webkit-transform: translate3d(0, 0, 0);
-                transform: translate3d(0, 0, 0);
-                /* Prevent any interference from parent elements */
-                margin: 0 !important;
-                /* Ensure proper stacking context */
-                isolation: isolate;
-                /* Prevent the nav from being affected by scroll */
-                position: fixed !important;
-            }
-
-            /* Prevent body scroll from affecting the nav */
-            body {
-                position: relative;
-            }
-
-            /* Ensure content doesn't overlap the navigation */
-            .main-content,
-            .page {
-                padding-bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 20px) !important;
-                margin-bottom: 0 !important;
-            }
-        }
-
-        /* Specific fix for very small screens */
-        @media (max-width: 480px) and (max-height: 800px) {
-            .bottom-nav {
-                /* Ensure it's always visible even on small screens */
-                min-height: var(--bottom-nav-height);
-                /* Force position */
-                position: fixed !important;
-                bottom: 0 !important;
-            }
-        }
-
-        /* Class added by JavaScript to ensure navigation always stays visible */
-        .bottom-nav.nav-always-visible {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            z-index: 999999 !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            display: block !important;
-            transform: none !important;
-            /* Prevent any animation or transition from hiding it */
-            animation: none !important;
-            transition: none !important;
         }
 
         /* Garder la barre de recherche visible sur la page all-transactions */
@@ -6398,58 +6313,8 @@
             document.getElementById('compoundToggle').textContent = 'Masquer';
         }
 
-        // Function to ensure bottom navigation stays visible
-        function ensureBottomNavVisibility() {
-            const bottomNav = document.querySelector('.bottom-nav');
-            if (bottomNav) {
-                // Force the navigation to be visible
-                bottomNav.style.position = 'fixed';
-                bottomNav.style.bottom = '0';
-                bottomNav.style.left = '0';
-                bottomNav.style.right = '0';
-                bottomNav.style.zIndex = '999999';
-                bottomNav.style.visibility = 'visible';
-                bottomNav.style.opacity = '1';
-                bottomNav.style.transform = 'none';
-                bottomNav.style.display = 'block';
-                
-                // Add a class to prevent any CSS from hiding it
-                bottomNav.classList.add('nav-always-visible');
-            }
-        }
-
-        // Function to periodically check navigation visibility
-        function monitorBottomNavVisibility() {
-            setInterval(() => {
-                const bottomNav = document.querySelector('.bottom-nav');
-                if (bottomNav) {
-                    const styles = window.getComputedStyle(bottomNav);
-                    if (styles.display === 'none' || styles.visibility === 'hidden' || styles.opacity === '0') {
-                        ensureBottomNavVisibility();
-                    }
-                }
-            }, 1000); // Check every second
-        }
-
         // Version instantanée (sans animation)
         document.addEventListener('DOMContentLoaded', function () {
-            // Fix for bottom navigation visibility
-            ensureBottomNavVisibility();
-            
-            // Start monitoring bottom nav visibility
-            monitorBottomNavVisibility();
-            
-            // Handle scroll events to ensure nav stays visible
-            window.addEventListener('scroll', ensureBottomNavVisibility);
-            
-            // Handle orientation changes on mobile
-            window.addEventListener('orientationchange', function() {
-                setTimeout(ensureBottomNavVisibility, 100);
-            });
-            
-            // Handle resize events
-            window.addEventListener('resize', ensureBottomNavVisibility);
-            
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => {
                 item.addEventListener('click', function () {
