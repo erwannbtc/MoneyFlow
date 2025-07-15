@@ -132,27 +132,26 @@
             -webkit-overflow-scrolling: touch;
             overscroll-behavior-x: none;
             overscroll-behavior-y: auto;
-
-            /* Nouveau background avec gradient + SVG grainy + filtre */
-            filter: contrast(120%) brightness(100%);
-            background:
-                radial-gradient(circle at 78% -35%, rgba(0, 0, 8, 1), rgba(2, 26, 67, 1)),
-                radial-gradient(circle at 150% 150%, rgba(10, 10, 10, 0.97), rgba(3, 25, 98, 0.95)),
-                radial-gradient(circle at 140% 150%, rgba(12, 12, 12, 1), rgba(247, 6, 6, 0.99)),
-                linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(0, 0, 0, 1) 100%),
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            background-size: cover;
             color: var(--text-primary);
             position: relative;
             margin: 0;
             padding: 0;
         }
 
-        
-
-
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url("icons/background.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            filter: contrast(120%) brightness(100%);
+        }
 
         /* Icons SVG*/
         .action-icon svg,
@@ -499,6 +498,16 @@
             padding: 0;
             opacity: 0;
             transform: translateY(-20px);
+        }
+
+        /* Règle universelle pour masquer toutes les barres de scroll */
+        * {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+
+        *::-webkit-scrollbar {
+            display: none; /* Webkit browsers */
         }
 
         /* Actions rapides */
@@ -2453,19 +2462,17 @@
             flex-shrink: 0;
         }
 
-        .transaction-icon.income {
-            background: var(--revolut-green);
+        .transaction-icon svg {
             color: white;
+            fill: none;
         }
 
-        .transaction-icon.expense {
-            background: var(--revolut-red);
-            color: white;
-        }
-
-        .transaction-icon.bitcoin {
-            background: var(--bitcoin-orange);
-            color: white;
+        .transaction-icon svg path,
+        .transaction-icon svg circle,
+        .transaction-icon svg line,
+        .transaction-icon svg rect,
+        .transaction-icon svg polyline {
+            stroke: white;
         }
 
         .transaction-details {
@@ -3105,8 +3112,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 20% 80%, rgba(0, 122, 239, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 149, 0, 0.06) 0%, transparent 50%);
+            background: radial-gradient(circle at 20% 80%, rgba(0, 122, 239, 0.08) 0%, transparent 50%);
             pointer-events: none;
             z-index: -1;
             border-radius: 24px;
@@ -4194,6 +4200,328 @@
             box-shadow: none;
         }
 
+        /* Styles modernes pour la page Gestion des Catégories */
+        .categories-page-modern {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .categories-header-modern {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 20px 0;
+        }
+
+        .categories-title-modern {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 8px 0;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .categories-subtitle-modern {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .categories-container-modern {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            margin-bottom: 24px;
+        }
+
+        .category-item-modern {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .category-item-modern:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            right: 20px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .category-item-modern:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .category-info-modern {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .category-icon-modern {
+            width: 44px;
+            height: 44px;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-icon-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+            border-radius: 50%;
+        }
+
+        .category-details-modern {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .category-name-modern {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .category-usage-modern {
+            font-size: 13px;
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .category-actions-modern {
+            display: flex;
+            gap: 8px;
+        }
+
+        .category-action-btn-modern {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .category-action-btn-modern:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .category-action-btn-modern.delete {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: var(--revolut-red);
+        }
+
+        .category-action-btn-modern.delete:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .category-required-modern {
+            background: rgba(142, 142, 147, 0.12);
+            border: 1px solid rgba(142, 142, 147, 0.2);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .add-category-modern {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .add-category-header-modern {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .add-category-icon-modern {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--revolut-blue), #1d4ed8);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        .add-category-title-modern {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .add-category-form-modern {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .form-group-modern {
+            flex: 1;
+        }
+
+        .form-label-modern {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-input-modern {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input-modern:focus {
+            outline: none;
+            border-color: var(--revolut-blue);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .form-input-modern::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .add-btn-modern {
+            background: linear-gradient(135deg, var(--revolut-blue), #1d4ed8);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        .add-btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Couleurs pour les icônes de catégories */
+        .category-icon-modern.bitcoin { background: linear-gradient(135deg, var(--bitcoin-orange), #FFB84D); }
+        .category-icon-modern.alimentation { background: linear-gradient(135deg, #10b981, #059669); }
+        .category-icon-modern.transport { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .category-icon-modern.carburant { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .category-icon-modern.credit { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .category-icon-modern.loyer { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .category-icon-modern.loisirs { background: linear-gradient(135deg, #ec4899, #db2777); }
+        .category-icon-modern.sante { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .category-icon-modern.shopping { background: linear-gradient(135deg, #f97316, #ea580c); }
+        .category-icon-modern.divers { background: linear-gradient(135deg, #6b7280, #4b5563); }
+        .category-icon-modern.investissement { background: linear-gradient(135deg, #10b981, #047857); }
+        .category-icon-modern.remboursement { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+
+        /* Animation d'apparition */
+        @keyframes fadeInCategory {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .category-item-modern {
+            animation: fadeInCategory 0.4s ease forwards;
+        }
+
+        .category-item-modern:nth-child(1) { animation-delay: 0.1s; }
+        .category-item-modern:nth-child(2) { animation-delay: 0.15s; }
+        .category-item-modern:nth-child(3) { animation-delay: 0.2s; }
+        .category-item-modern:nth-child(4) { animation-delay: 0.25s; }
+        .category-item-modern:nth-child(5) { animation-delay: 0.3s; }
+        .category-item-modern:nth-child(6) { animation-delay: 0.35s; }
+        .category-item-modern:nth-child(7) { animation-delay: 0.4s; }
+        .category-item-modern:nth-child(8) { animation-delay: 0.45s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .categories-page-modern {
+                padding: 0 12px;
+            }
+
+            .category-item-modern {
+                padding: 16px;
+            }
+
+            .category-icon-modern {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .add-category-form-modern {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .add-btn-modern {
+                width: 100%;
+            }
+        }
+
         /* Header simplifié */
         .budget-category-header-clean {
             display: flex;
@@ -4503,31 +4831,7 @@
         .budget-message.warning { border-left-color: var(--revolut-orange); }
         .budget-message.danger { border-left-color: var(--revolut-red); }
 
-        .budget-alert-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, rgba(255, 149, 0, 0.9), rgba(255, 149, 0, 0.7));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 149, 0, 0.3);
-            border-radius: 12px;
-            padding: 16px 20px;
-            color: white;
-            font-weight: 600;
-            z-index: 10001;
-            transform: translateX(100%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 300px;
-        }
-
-        .budget-alert-notification.show {
-            transform: translateX(0);
-        }
-
-        .budget-alert-notification.danger {
-            background: linear-gradient(135deg, rgba(255, 59, 48, 0.9), rgba(255, 59, 48, 0.7));
-            border-color: rgba(255, 59, 48, 0.3);
-        }
+        
 
         .budget-category-item {
             display: flex;
@@ -4852,7 +5156,7 @@
                 <div class="simulator-card">
                     <div class="simulator-header">
                         <div class="simulator-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
-                            <img src="C:\Users\Erwann\Desktop\MoneyFlow\icons\Graphique de croissances ascendantes.png"
+                            <img src="icons/39382606-14da-4210-a397-d4c8674b1ff3.png"
                                  alt="Graphique exponentiel" 
                                  style="width: 30px; height: 30px; filter: brightness(0) invert(1);">
                         </div>
@@ -5090,8 +5394,6 @@
                 </div>
             </div>
 
-            <!-- Alerte Budget -->
-            <div class="budget-alert-notification" id="budgetAlertNotification"></div>
 
             <!-- Page Bitcoin -->
             <div id="bitcoin" class="page">
@@ -5135,11 +5437,131 @@
                     <!-- Transactions Bitcoin -->
                     <div class="transactions-card-bitcoin">
                         <div class="section-header-bitcoin">
-                            <div class="section-title-bitcoin">Achats Bitcoin</div>
-                            <div class="section-badge-bitcoin" id="bitcoinTransactionCount">0 achats</div>
+                            <div class="section-title-bitcoin">Transactions Bitcoin</div>
+                            <div class="section-badge-bitcoin" id="bitcoinTransactionCount">0 transactions</div>
                         </div>
                         <div id="bitcoinTransactionsList"></div>
+                        <button class="add-asset-btn-portfolio" onclick="showModal('bitcoinTransactionModal')" style="background: linear-gradient(135deg, var(--bitcoin-orange), #FFB84D); margin-top: 16px;">
+                            <svg viewBox="0 0 24 24" fill="none" style="width: 16px; height: 16px;">
+                                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Ajouter Bitcoin
+                        </button>
                     </div>
+                </div>
+            </div>
+
+            <!-- Modal Modifier Transaction Bitcoin -->
+            <div id="editBitcoinTransactionModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Modifier Transaction Bitcoin</h3>
+                        <span class="close" onclick="hideModal('editBitcoinTransactionModal')">&times;</span>
+                    </div>
+                    <form id="editBitcoinTransactionForm">
+                        <div class="form-group">
+                            <label class="form-label">Type de transaction</label>
+                            <select class="form-input" id="editBitcoinTransactionType" required>
+                                <option value="add">Ajouter du Bitcoin</option>
+                                <option value="remove">Retirer du Bitcoin</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Quantité de Bitcoin</label>
+                            <input type="number" class="form-input" id="editBitcoinTransactionQuantity" step="0.00000001" placeholder="0.001" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-input" id="editBitcoinTransactionDescription" placeholder="Ex: Transfer depuis Binance" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-input" id="editBitcoinTransactionDate" required>
+                        </div>
+
+                        <!-- Champs optionnels -->
+                        <div class="form-group">
+                            <label class="form-label">Adresse de départ (optionnel)</label>
+                            <input type="text" class="form-input" id="editBitcoinFromAddress" placeholder="Ex: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Adresse de destination (optionnel)</label>
+                            <input type="text" class="form-input" id="editBitcoinToAddress" placeholder="Ex: bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">ID de transaction (optionnel)</label>
+                            <input type="text" class="form-input" id="editBitcoinTxId" placeholder="Ex: a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d">
+                        </div>
+
+                        <div style="display: flex; gap: 12px; margin-top: 24px;">
+                            <button type="submit" class="btn" style="flex: 1; background: var(--bitcoin-orange);">
+                                Modifier
+                            </button>
+                            <button type="button" class="btn btn-red" style="flex: 1;" onclick="deleteBitcoinTransactionFromEdit()">
+                                Supprimer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal Transaction Bitcoin Pure -->
+            <div id="bitcoinTransactionModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Transaction Bitcoin</h3>
+                        <span class="close" onclick="hideModal('bitcoinTransactionModal')">&times;</span>
+                    </div>
+                    <form id="bitcoinTransactionForm">
+                        <div class="form-group">
+                            <label class="form-label">Type de transaction</label>
+                            <select class="form-input" id="bitcoinTransactionType" required>
+                                <option value="add">Ajouter du Bitcoin</option>
+                                <option value="remove">Retirer du Bitcoin</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Quantité de Bitcoin</label>
+                            <input type="number" class="form-input" id="bitcoinTransactionQuantity" step="0.00000001" placeholder="0.001" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-input" id="bitcoinTransactionDescription" placeholder="Ex: Transfer depuis Binance" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-input" id="bitcoinTransactionDate" required>
+                        </div>
+
+                        <!-- Nouveaux champs optionnels -->
+                        <div class="form-group">
+                            <label class="form-label">Adresse de départ (optionnel)</label>
+                            <input type="text" class="form-input" id="bitcoinFromAddress" placeholder="Ex: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa">
+                            <small style="opacity: 0.7; font-size: 0.8rem; margin-top: 5px; display: block;">
+                                Adresse d'où proviennent les bitcoins
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Adresse de destination (optionnel)</label>
+                            <input type="text" class="form-input" id="bitcoinToAddress" placeholder="Ex: bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh">
+                            <small style="opacity: 0.7; font-size: 0.8rem; margin-top: 5px; display: block;">
+                                Adresse de réception des bitcoins
+                            </small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">ID de transaction (optionnel)</label>
+                            <input type="text" class="form-input" id="bitcoinTxId" placeholder="Ex: a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d">
+                            <small style="opacity: 0.7; font-size: 0.8rem; margin-top: 5px; display: block;">
+                                Identifiant de la transaction sur la blockchain
+                            </small>
+                        </div>
+
+                        <button type="submit" class="btn" style="background: var(--bitcoin-orange);">Ajouter la transaction</button>
+                    </form>
                 </div>
             </div>
 
@@ -5264,20 +5686,33 @@
             </div>
 
             <!-- Page Paramètres -->
-        <div id="settings" class="page">
-            <div class="transaction-card">
-                <div class="card-header">
-                    <div class="card-title">Gestion des Catégories</div>
-                </div>
-                <div id="categoriesList"></div>
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <input type="text" id="newCategoryInput" placeholder="Nouvelle catégorie" class="form-input"
-                        style="margin-bottom: 0;">
-                    <button class="btn" onclick="addCategory()"
-                        style="width: auto; padding: 16px 20px; margin-bottom: 0;">Ajouter</button>
+            <div id="settings" class="page">
+                <div class="categories-page-modern">
+                    <!-- Header moderne -->
+                    <div class="categories-header-modern">
+                        <h1 class="categories-title-modern">Gestion des Catégories</h1>
+                        <p class="categories-subtitle-modern">Organisez vos transactions par catégories</p>
+                    </div>
+
+                    <!-- Liste des catégories -->
+                    <div id="categoriesList"></div>
+
+                    <!-- Formulaire d'ajout moderne -->
+                    <div class="add-category-modern">
+                        <div class="add-category-header-modern">
+                            <div class="add-category-icon-modern">+</div>
+                            <h3 class="add-category-title-modern">Ajouter une catégorie</h3>
+                        </div>
+                        <div class="add-category-form-modern">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Nom de la catégorie</label>
+                                <input type="text" id="newCategoryInput" placeholder="Ex: Voyages, Éducation..." class="form-input-modern">
+                            </div>
+                            <button class="add-btn-modern" onclick="addCategory()">Ajouter</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
             <!-- Page Gestion des Données -->
             <div id="data-management" class="page">
@@ -6122,7 +6557,8 @@
 
             let calendarHTML = '<div class="calendar-grid">';
 
-            const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            // CHANGÉ : Lundi en premier
+            const dayNames = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
             dayNames.forEach(day => {
                 calendarHTML += `<div class="day-header">${day}</div>`;
             });
@@ -6130,7 +6566,9 @@
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
             const daysInMonth = lastDay.getDate();
-            const startingDayOfWeek = firstDay.getDay();
+
+            // CHANGÉ : Convertir pour que lundi = 0
+            const startingDayOfWeek = (firstDay.getDay() + 6) % 7;
 
             for (let i = 0; i < startingDayOfWeek; i++) {
                 calendarHTML += '<div class="calendar-day other-month"></div>';
@@ -6186,7 +6624,10 @@
             // Filtrer les transactions du mois
             const monthTransactions = appData.transactions.filter(transaction => {
                 const transactionDate = new Date(transaction.date);
-                return transactionDate.getMonth() === month && transactionDate.getFullYear() === year;
+                return transactionDate.getMonth() === month && 
+                       transactionDate.getFullYear() === year &&
+                       !transaction.isPureBitcoin && 
+                       transaction.type !== 'bitcoin_only';
             });
 
             currentMonthTransactions = monthTransactions;
@@ -6490,7 +6931,7 @@
             transactions.forEach(transaction => {
                 const isBitcoin = transaction.category === 'bitcoin';
                 const iconType = transaction.type === 'income' ? 'income' : (isBitcoin ? 'bitcoin' : 'expense');
-                const icon = transaction.type === 'income' ? '+' : (isBitcoin ? '₿' : '-');
+                const icon = getCategoryIcon(transaction);
                 const amountColor = transaction.type === 'income' ? 'var(--revolut-green)' : 'var(--text-primary)';
 
                 html += `
@@ -6588,14 +7029,20 @@
             const today = new Date();
             today.setHours(23, 59, 59, 999);
 
+            // Exclure les transactions Bitcoin pures (transfers)
             currentFilteredTransactions = appData.transactions
-                .filter(transaction => new Date(transaction.date) <= today)
+                .filter(transaction => {
+                    const transactionDate = new Date(transaction.date);
+                    return transactionDate <= today && 
+                           !transaction.isPureBitcoin && 
+                           transaction.type !== 'bitcoin_only';
+                })
                 .sort((a, b) => new Date(b.date) - new Date(a.date));
 
             generateMonthPills();
             renderFilteredTransactions(currentFilteredTransactions);
         }
-
+        
         // Générer les pills des mois
         function generateMonthPills() {
             const container = document.getElementById('monthPillsSwipeable');
@@ -6661,7 +7108,10 @@
         function filterAllTransactions(query) {
             const searchQuery = query.toLowerCase().trim();
 
-            let baseTransactions = currentFilteredTransactions;
+            // Exclure les transactions Bitcoin pures de la base
+            let baseTransactions = currentFilteredTransactions.filter(transaction => 
+                !transaction.isPureBitcoin && transaction.type !== 'bitcoin_only'
+            );
 
             // Appliquer le filtre de mois si sélectionné
             if (selectedMonthFilter) {
@@ -6683,13 +7133,13 @@
                 );
             }
 
-            // Afficher un indicateur de recherche si une recherche est active
+            // Le reste de la fonction reste identique...
             const container = document.getElementById('allTransactionsFiltered');
             let searchIndicator = '';
 
             if (searchQuery) {
                 searchIndicator = `
-                    <div style="background: var(transparent); padding: 12px 20px; margin: 0 -24px 20px; text-align: center; color: white; font-weight: 600;">
+                    <div style="background: transparent; padding: 12px 20px; margin: 0 -24px 20px; text-align: center; color: white; font-weight: 600;">
                         Recherche: "${query}" • ${filteredTransactions.length} résultat${filteredTransactions.length > 1 ? 's' : ''}
                         <button onclick="clearAllTransactionsSearch()" style="background: none; border: none; color: white; margin-left: 16px; cursor: pointer; text-decoration: underline;">Effacer</button>
                     </div>
@@ -6744,7 +7194,7 @@
                 groupedTransactions[dateGroup].forEach(transaction => {
                     const isBitcoin = transaction.category === 'bitcoin';
                     const iconType = transaction.type === 'income' ? 'income' : (isBitcoin ? 'bitcoin' : 'expense');
-                    const icon = transaction.type === 'income' ? '+' : (isBitcoin ? '₿' : '-');
+                    const icon = getCategoryIcon(transaction);
                     const amountColor = transaction.type === 'income' ? 'var(--revolut-green)' : 'var(--text-primary)';
 
                     html += `
@@ -6833,7 +7283,7 @@
                 groupedTransactions[dateGroup].forEach(transaction => {
                     const isBitcoin = transaction.category === 'bitcoin';
                     const iconType = transaction.type === 'income' ? 'income' : (isBitcoin ? 'bitcoin' : 'expense');
-                    const icon = transaction.type === 'income' ? '+' : (isBitcoin ? '₿' : '-');
+                    const icon = getCategoryIcon(transaction);
                     const amountColor = transaction.type === 'income' ? 'var(--revolut-green)' : 'var(--text-primary)';
 
                     html += `
@@ -6875,7 +7325,7 @@
             transactions: [],
             assets: [],
             fireGoals: [],
-            categories: ['bitcoin', 'alimentation', 'transport', 'logement', 'loisirs', 'santé', 'shopping', 'divers'],
+            categories: ['Bitcoin', 'Alimentation', 'Transport','Carburant', 'Crédit', 'Loyer', 'Loisirs', 'Santé', 'Shopping', 'Divers', 'Investissement', 'Remboursement'],
             settings: {
                 currentBalance: 0
             },  
@@ -7310,7 +7760,9 @@
 
         // Fonctions Bitcoin
         function getBitcoinTransactions() {
-            return appData.transactions.filter(t => t.category === 'bitcoin');
+            return appData.transactions.filter(t => 
+                t.category === 'bitcoin' || t.type === 'bitcoin_only'
+            );
         }
 
         function calculateBitcoinStats() {
@@ -7515,10 +7967,10 @@
             const container = document.getElementById('bitcoinTransactionsList');
 
             // Mettre à jour le badge de comptage
-            document.getElementById('bitcoinTransactionCount').textContent = `${bitcoinTxs.length} achats`;
+            document.getElementById('bitcoinTransactionCount').textContent = `${bitcoinTxs.length} transactions`;
 
             if (bitcoinTxs.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">Aucun achat Bitcoin</p>';
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">Aucune transaction Bitcoin</p>';
                 return;
             }
 
@@ -7529,19 +7981,43 @@
                 const time = date.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'});
                 const dateStr = date.toLocaleDateString('fr-FR', {day: 'numeric', month: 'short'});
 
+                // Déterminer le type d'affichage selon la transaction
+                let displayInfo = '';
+                let amountDisplay = '';
+
+                if (tx.isPureBitcoin || tx.type === 'bitcoin_only') {
+                    // Transaction Bitcoin pure
+                    if (btcQuantity > 0) {
+                        displayInfo = `<span class="transaction-btc-bitcoin">+${btcQuantity.toFixed(8)} BTC</span>`;
+                        amountDisplay = '<div class="transaction-price-bitcoin" style="color: var(--bitcoin-orange);">Transfer</div>';
+                    } else {
+                        displayInfo = `<span class="transaction-btc-bitcoin" style="color: var(--revolut-red);">${btcQuantity.toFixed(8)} BTC</span>`;
+                        amountDisplay = '<div class="transaction-price-bitcoin" style="color: var(--bitcoin-orange);">Transfer</div>';
+                    }
+                } else {
+                    // Transaction Bitcoin classique (achat/vente)
+                    if (tx.type === 'expense') {
+                        displayInfo = `<span class="transaction-btc-bitcoin">+${btcQuantity.toFixed(8)} BTC</span>`;
+                        amountDisplay = `<div class="transaction-price-bitcoin">€${tx.amount.toFixed(2)}</div>`;
+                    } else {
+                        displayInfo = `<span class="transaction-btc-bitcoin" style="color: var(--revolut-red);">${Math.abs(btcQuantity).toFixed(8)} BTC</span>`;
+                        amountDisplay = `<div class="transaction-price-bitcoin" style="color: var(--revolut-green);">+€${tx.amount.toFixed(2)}</div>`;
+                    }
+                }
+
                 html += `
                     <div class="transaction-item-bitcoin" onclick="showTransactionDetails(${tx.id})" style="cursor: pointer;">
                         <div class="transaction-icon-bitcoin">₿</div>
                         <div class="transaction-details-bitcoin">
                             <div class="transaction-name-bitcoin">${tx.name}</div>
                             <div class="transaction-meta-bitcoin">
-                                <span class="transaction-btc-bitcoin">+${btcQuantity.toFixed(8)} BTC</span>
+                                ${displayInfo}
                                 <span>•</span>
                                 <span>${dateStr}</span>
                             </div>
                         </div>
                         <div class="transaction-amount-bitcoin">
-                            <div class="transaction-price-bitcoin">€${tx.amount.toFixed(2)}</div>
+                            ${amountDisplay}
                             <div class="transaction-date-bitcoin">${time}</div>
                         </div>
                     </div>
@@ -7601,20 +8077,78 @@
             const container = document.getElementById('categoriesList');
             if (!container) return;
 
-            let html = '';
-            appData.categories.forEach(category => {
+            // Calculer l'utilisation de chaque catégorie
+            const categoryUsage = {};
+            appData.transactions.forEach(transaction => {
+                const category = transaction.category || 'divers';
+                categoryUsage[category] = (categoryUsage[category] || 0) + 1;
+            });
+
+            let html = '<div class="categories-container-modern">';
+
+            appData.categories.forEach((category, index) => {
                 const displayName = category === 'bitcoin' ? 'Bitcoin' : category.charAt(0).toUpperCase() + category.slice(1);
                 const canDelete = category !== 'bitcoin';
+                const usage = categoryUsage[category] || 0;
+                const usageText = usage === 0 ? 'Jamais utilisée' : 
+                                 usage === 1 ? '1 transaction' : 
+                                 `${usage} transactions`;
+
+                // Icône selon la catégorie
+                const categoryIcon = getCategoryIconForDisplay(category);
+                const iconClass = category.toLowerCase().replace(/[^a-z]/g, '');
 
                 html += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--revolut-gray); border-radius: 12px; margin-bottom: 8px;">
-                        <span style="color: var(--text-primary);">${displayName}</span>
-                        ${canDelete ? `<button onclick="deleteCategory('${category}')" style="background: var(--revolut-red); border: none; color: white; padding: 8px 12px; border-radius: 16px; cursor: pointer; font-size: 12px;">Supprimer</button>` : '<span style="opacity: 0.5; font-size: 12px; color: var(--text-secondary);">Obligatoire</span>'}
+                    <div class="category-item-modern" style="animation-delay: ${index * 0.05}s">
+                        <div class="category-info-modern">
+                            <div class="category-icon-modern ${iconClass}">
+                                ${categoryIcon}
+                            </div>
+                            <div class="category-details-modern">
+                                <div class="category-name-modern">${displayName}</div>
+                                <div class="category-usage-modern">${usageText}</div>
+                            </div>
+                        </div>
+                        <div class="category-actions-modern">
+                            ${canDelete ? 
+                                `<button class="category-action-btn-modern delete" onclick="deleteCategory('${category}')">Supprimer</button>` : 
+                                `<div class="category-required-modern">Obligatoire</div>`
+                            }
+                        </div>
                     </div>
                 `;
             });
 
+            html += '</div>';
+
             container.innerHTML = html;
+        }
+
+        // Fonction pour obtenir l'icône d'affichage des catégories
+        function getCategoryIconForDisplay(category) {
+            // Utiliser la même fonction que les transactions mais retourner juste l'emoji pour l'affichage
+            const mockTransaction = { category: category, type: 'expense' };
+            const icon = getCategoryIcon(mockTransaction);
+
+            // Si c'est du SVG, convertir en emoji simple pour l'affichage
+            if (icon.includes('<svg>')) {
+                const emojiMap = {
+                    'alimentation': '🍽️',
+                    'transport': '🚗',
+                    'carburant': '⛽',
+                    'crédit': '💳',
+                    'loyer': '🏠',
+                    'loisirs': '🎮',
+                    'santé': '⚕️',
+                    'shopping': '🛍️',
+                    'investissement': '📈',
+                    'remboursement': '💰',
+                    'divers': '📝'
+                };
+                return emojiMap[category] || '📝';
+            }
+
+            return icon;
         }
 
         function addCategory() {
@@ -7662,10 +8196,18 @@
         function toggleBitcoinQuantity() {
             const categorySelect = document.getElementById('transactionCategory');
             const bitcoinGroup = document.getElementById('bitcoinQuantityGroup');
+            const typeSelect = document.getElementById('transactionType');
 
             if (categorySelect.value === 'bitcoin') {
                 bitcoinGroup.style.display = 'block';
-                document.getElementById('transactionType').value = 'expense';
+
+                // Changer le texte selon le type
+                const label = bitcoinGroup.querySelector('label');
+                if (typeSelect.value === 'income') {
+                    label.textContent = 'Quantité de Bitcoin vendue';
+                } else {
+                    label.textContent = 'Quantité de Bitcoin achetée';
+                }
             } else {
                 bitcoinGroup.style.display = 'none';
                 document.getElementById('bitcoinQuantity').value = '';
@@ -7790,7 +8332,7 @@
                 dayTransactions.forEach(transaction => {
                     const isBitcoin = transaction.category === 'bitcoin';
                     const iconType = transaction.type === 'income' ? 'income' : (isBitcoin ? 'bitcoin' : 'expense');
-                    const icon = transaction.type === 'income' ? '+' : (isBitcoin ? '₿' : '-');
+                    const icon = getCategoryIcon(transaction);
                     const amountColor = transaction.type === 'income' ? 'var(--revolut-green)' : 'var(--text-primary)';
 
                     html += `
@@ -7837,6 +8379,8 @@
                     loadCategories();
                 } else if (modalId === 'analyticsModal') {
                     updateAnalyticsDisplay();
+                } else if (modalId === 'bitcoinTransactionModal') {
+                    initBitcoinTransactionModal();
                 }
             }
         }
@@ -7853,38 +8397,133 @@
             }
         }
 
+        // Fonction pour ajouter une transaction Bitcoin pure (sans impact euro)
+        function addPureBitcoinTransaction() {
+            const type = document.getElementById('bitcoinTransactionType').value;
+            const quantity = parseFloat(document.getElementById('bitcoinTransactionQuantity').value);
+            const description = document.getElementById('bitcoinTransactionDescription').value;
+            const date = document.getElementById('bitcoinTransactionDate').value;
+
+            // Nouveaux champs optionnels
+            const fromAddress = document.getElementById('bitcoinFromAddress').value.trim();
+            const toAddress = document.getElementById('bitcoinToAddress').value.trim();
+            const txId = document.getElementById('bitcoinTxId').value.trim();
+
+            if (!quantity || quantity <= 0) {
+                alert('Veuillez entrer une quantité valide');
+                return;
+            }
+
+            if (!description.trim()) {
+                alert('Veuillez entrer une description');
+                return;
+            }
+
+            // Créer une transaction spéciale qui n'affecte que le Bitcoin
+            const bitcoinQuantityToAdd = type === 'add' ? quantity : -quantity;
+
+            const transaction = {
+                id: Date.now(),
+                name: description,
+                amount: 0, // Montant euro = 0 pour ne pas affecter le portefeuille
+                type: 'bitcoin_only', // Type spécial pour identifier ces transactions
+                category: 'bitcoin',
+                bitcoinQuantity: bitcoinQuantityToAdd,
+                date: date,
+                recurring: false,
+                isPureBitcoin: true, // Flag pour identifier les transactions Bitcoin pures
+                // Nouveaux champs optionnels
+                fromAddress: fromAddress || null,
+                toAddress: toAddress || null,
+                transactionId: txId || null
+            };
+
+            // Ajouter la transaction
+            appData.transactions.push(transaction);
+
+            // Sauvegarder et mettre à jour
+            saveData();
+
+            // Mettre à jour Bitcoin
+            updateBitcoinAssetFromTransactions();
+            if (document.querySelector('#bitcoin.active')) {
+                displayBitcoinPage();
+            }
+
+            updateDisplay();
+
+            // Fermer la modal et réinitialiser
+            hideModal('bitcoinTransactionModal');
+            resetBitcoinTransactionModal();
+
+            // Notification de succès
+            const actionText = type === 'add' ? 'ajouté' : 'retiré';
+            alert(`${quantity} BTC ${actionText} avec succès !`);
+        }
+
+        // Fonction pour réinitialiser la modal Bitcoin
+        function resetBitcoinTransactionModal() {
+            document.getElementById('bitcoinTransactionForm').reset();
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('bitcoinTransactionDate').value = today;
+
+            // Vider les nouveaux champs optionnels
+            document.getElementById('bitcoinFromAddress').value = '';
+            document.getElementById('bitcoinToAddress').value = '';
+            document.getElementById('bitcoinTxId').value = '';
+        }
+
+        // Event listener pour le formulaire Bitcoin
+        function setupBitcoinTransactionListener() {
+            const bitcoinForm = document.getElementById('bitcoinTransactionForm');
+            if (bitcoinForm) {
+                bitcoinForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    addPureBitcoinTransaction();
+                });
+            }
+        }
+
+        // Fonction pour initialiser la date d'aujourd'hui dans la modal Bitcoin
+        function initBitcoinTransactionModal() {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('bitcoinTransactionDate');
+            if (dateInput) {
+                dateInput.value = today;
+            }
+        }
+
         // Fonctions pour les transactions
         function addTransaction() {
             const isRecurring = document.getElementById('transactionRecurring').value === 'yes';
             const category = document.getElementById('transactionCategory').value;
+            const type = document.getElementById('transactionType').value;
             const bitcoinQuantity = category === 'bitcoin' ? parseFloat(document.getElementById('bitcoinQuantity').value) || 0 : 0;
+
+            // Pour Bitcoin, gérer la quantité selon le type (achat/vente)
+            let actualBitcoinQuantity = 0;
+            if (category === 'bitcoin' && bitcoinQuantity > 0) {
+                if (type === 'expense') {
+                    // Achat Bitcoin : quantité positive
+                    actualBitcoinQuantity = bitcoinQuantity;
+                } else {
+                    // Vente Bitcoin : quantité négative pour retirer du portefeuille
+                    actualBitcoinQuantity = -bitcoinQuantity;
+                }
+            }
 
             const transactionData = {
                 name: document.getElementById('transactionName').value,
                 amount: parseFloat(document.getElementById('transactionAmount').value),
-                type: document.getElementById('transactionType').value,
+                type: type,
                 category: category,
-                bitcoinQuantity: bitcoinQuantity,
+                bitcoinQuantity: actualBitcoinQuantity,
                 date: document.getElementById('transactionDate').value,
                 recurring: isRecurring,
                 frequency: isRecurring ? document.getElementById('recurringFrequency').value : null,
                 startDate: isRecurring ? document.getElementById('recurringStartDate').value : null,
                 endDate: isRecurring ? document.getElementById('recurringEndDate').value || null : null
             };
-
-            if (transactionData.category === 'bitcoin') {
-                displayBitcoinSummary();
-                if (document.querySelector('#bitcoin.active')) {
-                    displayBitcoinPage();
-                }
-                // AJOUTER CETTE LIGNE :
-                updateBitcoinAssetFromTransactions();
-            }
-            updateDisplay();
-            hideModal('transactionModal');
-            resetTransactionModal();
-            displayRecentTransactions()
-            updateAnalyticsDisplay();
 
             if (window.editingTransactionId) {
                 // Modification d'une transaction existante
@@ -7909,13 +8548,10 @@
                 }
             }
 
-            const assetTicker = document.getElementById('assetTicker');
-            if (assetTicker) {
-                assetTicker.addEventListener('input', checkBitcoinSync);
-            }
-
+            // Sauvegarder et mettre à jour
             saveData();
 
+            // Mettre à jour Bitcoin si nécessaire
             if (transactionData.category === 'bitcoin') {
                 updateBitcoinAssetFromTransactions();
                 if (document.querySelector('#bitcoin.active')) {
@@ -7923,9 +8559,8 @@
                 }
             }
 
+            // Mettre à jour l'affichage
             updateDisplay();
-            hideModal('transactionModal');
-            resetTransactionModal();
             displayRecentTransactions();
 
             // Mettre à jour la page all-transactions si elle est active
@@ -7934,12 +8569,10 @@
             }
 
             updateAnalyticsDisplay();
+
+            // Fermer la modal et réinitialiser
             hideModal('transactionModal');
             resetTransactionModal();
-            displayRecentTransactions();
-            displayAllTransactions();
-            displayBitcoinSummary();
-            updateAnalyticsDisplay();
         }
 
         function addRecurringTransactions(transaction) {
@@ -8394,11 +9027,16 @@
             const today = new Date();
             today.setHours(23, 59, 59, 999);
 
-            // Changer de 10 à 3 transactions
+            // Exclure les transactions Bitcoin pures (transfers)
             const recentTransactions = appData.transactions
-                .filter(transaction => new Date(transaction.date) <= today)
+                .filter(transaction => {
+                    const transactionDate = new Date(transaction.date);
+                    return transactionDate <= today && 
+                           !transaction.isPureBitcoin && 
+                           transaction.type !== 'bitcoin_only';
+                })
                 .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .slice(0, 3); // Changé de 10 à 3
+                .slice(0, 3);
 
             let html = '';
             if (recentTransactions.length === 0) {
@@ -8407,8 +9045,7 @@
                 recentTransactions.forEach(transaction => {
                     const isBitcoin = transaction.category === 'bitcoin';
                     const iconType = transaction.type === 'income' ? 'income' : (isBitcoin ? 'bitcoin' : 'expense');
-                    const icon = transaction.type === 'income' ? '+' : (isBitcoin ? '₿' : '-');
-
+                    const icon = getCategoryIcon(transaction);
                     html += `
                         <div class="transaction-item" onclick="showTransactionDetails(${transaction.id})" style="cursor: pointer;">
                             <div class="transaction-icon ${iconType}">${icon}</div>
@@ -8695,11 +9332,26 @@
             if (savedData) {
                 try {
                     const parsedData = JSON.parse(savedData);
+
+                    // CORRECTION : Mise à jour des catégories par défaut sans doublons
+                    const defaultCategories = ['Bitcoin', 'Alimentation', 'Transport','Carburant', 'Crédit', 'Loyer', 'Loisirs', 'Santé', 'Shopping', 'Divers', 'Investissement', 'Remboursement'];
+                    let userCategories = parsedData.categories || [];
+
+                    // Ajouter les nouvelles catégories par défaut qui n'existent pas (comparaison insensible à la casse)
+                    defaultCategories.forEach(defaultCat => {
+                        const exists = userCategories.some(userCat => 
+                            userCat.toLowerCase() === defaultCat.toLowerCase()
+                        );
+                        if (!exists) {
+                            userCategories.push(defaultCat);
+                        }
+                    });
+
                     appData = {
                         transactions: parsedData.transactions || [],
                         assets: parsedData.assets || [],
                         fireGoals: parsedData.fireGoals || [],
-                        categories: parsedData.categories || ['bitcoin', 'alimentation', 'transport', 'logement', 'loisirs', 'santé', 'shopping', 'divers'],
+                        categories: userCategories, // Utiliser la liste mise à jour
                         settings: parsedData.settings || {currentBalance: 0},
                         budgetSettings: parsedData.budgetSettings || {
                             enabled: false,
@@ -8718,6 +9370,10 @@
                         },
                         budgetAlerts: parsedData.budgetAlerts || {}
                     };
+
+                    // Sauvegarder immédiatement pour persister les nouvelles catégories
+                    saveData();
+
                 } catch (e) {
                     console.error('Erreur lors du chargement des données:', e);
                 }
@@ -8755,7 +9411,7 @@
                             transactions: importedData.transactions || [],
                             assets: importedData.assets || [],
                             fireGoals: importedData.fireGoals || [],
-                            categories: importedData.categories || ['bitcoin', 'alimentation', 'transport', 'logement', 'loisirs', 'santé', 'shopping', 'divers'],
+                            categories: importedData.categories || ['Bitcoin', 'Alimentation', 'Transport','Carburant', 'Crédit', 'Loyer', 'Loisirs', 'Santé', 'Shopping', 'Divers', 'Investissement', 'Remboursement'],
                             settings: importedData.settings || {currentBalance: 0}
                         };
 
@@ -8784,7 +9440,7 @@
                     transactions: [],
                     assets: [],
                     fireGoals: [],
-                    categories: ['bitcoin', 'alimentation', 'transport', 'logement', 'loisirs', 'santé', 'shopping', 'divers'],
+                    categories: ['Bitcoin', 'Alimentation', 'Transport','Carburant', 'Crédit', 'Loyer', 'Loisirs', 'Santé', 'Shopping', 'Divers', 'Investissement', 'Remboursement'],
                     settings: {currentBalance: 0}
                 };
                 updateDisplay();
@@ -8821,6 +9477,16 @@
         }
 
         function setupEventListeners() {
+            setupBitcoinTransactionListener();
+
+            const editBitcoinForm = document.getElementById('editBitcoinTransactionForm');
+            if (editBitcoinForm) {
+                editBitcoinForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveBitcoinTransactionEdit();
+                });
+            }
+            
             const assetTickerInput = document.getElementById('assetTicker');
             if (assetTickerInput) {
                 assetTickerInput.addEventListener('input', checkBitcoinSync);
@@ -8832,6 +9498,13 @@
                 transactionForm.addEventListener('submit', function (e) {
                     e.preventDefault();
                     addTransaction();
+                });
+            }
+
+            const transactionType = document.getElementById('transactionType');
+            if (transactionType) {
+                transactionType.addEventListener('change', function() {
+                    toggleBitcoinQuantity(); // Relancer pour mettre à jour le texte
                 });
             }
 
@@ -8958,6 +9631,15 @@
         window.displayAllCategoriesForBudget = displayAllCategoriesForBudget;
         window.updateBudgetStatus = updateBudgetStatus;
         window.updateBudgetToggleButton = updateBudgetToggleButton;
+        window.addPureBitcoinTransaction = addPureBitcoinTransaction;
+        window.resetBitcoinTransactionModal = resetBitcoinTransactionModal;
+        window.setupBitcoinTransactionListener = setupBitcoinTransactionListener;
+        window.initBitcoinTransactionModal = initBitcoinTransactionModal;
+        window.openEditBitcoinTransactionModal = openEditBitcoinTransactionModal;
+        window.openEditNormalTransactionModal = openEditNormalTransactionModal;
+        window.saveBitcoinTransactionEdit = saveBitcoinTransactionEdit;
+        window.deleteBitcoinTransactionFromEdit = deleteBitcoinTransactionFromEdit;
+        window.getCategoryIcon = getCategoryIcon;
 
         // ========== FONCTIONS BUDGET ==========
 
@@ -9132,10 +9814,11 @@
             updateBudgetDisplay();
             updateBudgetToggleButton();
 
-            showBudgetAlert(
-                appData.budgetSettings.enabled ? 'Suivi budget activé !' : 'Suivi budget désactivé', 
-                appData.budgetSettings.enabled ? 'success' : 'warning'
-            );
+            // Supprimez ces lignes pour retirer la notification :
+            // showBudgetAlert(
+            //     appData.budgetSettings.enabled ? 'Suivi budget activé !' : 'Suivi budget désactivé', 
+            //     appData.budgetSettings.enabled ? 'success' : 'warning'
+            // );
         }
 
         function saveBudgetSettings() {
@@ -9338,6 +10021,34 @@
                     select.appendChild(option);
                 }
             });
+        }
+
+        function getCategoryIcon(transaction) {
+            const category = transaction.category;
+            const type = transaction.type;
+
+            // Bitcoin reste en texte
+            if (category === 'bitcoin' || transaction.isPureBitcoin || transaction.type === 'bitcoin_only') {
+                return '₿';
+            }
+
+            // Nouvelles icônes emoji pour toutes les catégories
+            const emojiIcons = {
+                'alimentation': '🍽️',
+                'transport': '🚗',
+                'carburant': '⛽',
+                'crédit': '💳',
+                'loyer': '🏠',
+                'loisirs': '🎮',
+                'santé': '⚕️',
+                'shopping': '🛍️',
+                'investissement': '📈',
+                'remboursement': '💰',
+                'divers': type === 'income' ? '💰' : '📝'
+            };
+
+            // Retourner l'icône emoji ou une icône par défaut
+            return emojiIcons[category] || (type === 'income' ? '💰' : '📝');
         }
 
         function addCategoryBudget() {
@@ -9748,6 +10459,36 @@
 
             // Afficher la modal
             showModal('transactionDetailsModal');
+
+            // Adresse de départ (si présente)
+            const fromAddressDetail = document.getElementById('fromAddressDetail');
+            const fromAddressEl = document.getElementById('detailFromAddress');
+            if (transaction.fromAddress && fromAddressDetail && fromAddressEl) {
+                fromAddressEl.textContent = transaction.fromAddress;
+                fromAddressDetail.style.display = 'flex';
+            } else if (fromAddressDetail) {
+                fromAddressDetail.style.display = 'none';
+            }
+
+            // Adresse de destination (si présente)
+            const toAddressDetail = document.getElementById('toAddressDetail');
+            const toAddressEl = document.getElementById('detailToAddress');
+            if (transaction.toAddress && toAddressDetail && toAddressEl) {
+                toAddressEl.textContent = transaction.toAddress;
+                toAddressDetail.style.display = 'flex';
+            } else if (toAddressDetail) {
+                toAddressDetail.style.display = 'none';
+            }
+
+            // ID de transaction (si présent)
+            const txIdDetail = document.getElementById('txIdDetail');
+            const txIdEl = document.getElementById('detailTxId');
+            if (transaction.transactionId && txIdDetail && txIdEl) {
+                txIdEl.textContent = transaction.transactionId;
+                txIdDetail.style.display = 'flex';
+            } else if (txIdDetail) {
+                txIdDetail.style.display = 'none';
+            }
         }
 
         // Fonction pour modifier depuis les détails
@@ -9757,11 +10498,40 @@
             // Fermer la modal des détails
             hideModal('transactionDetailsModal');
 
-            // Ouvrir la modal d'édition avec les données pré-remplies
+            // Trouver la transaction
             const transaction = appData.transactions.find(t => t.id === currentViewingTransactionId);
             if (!transaction) return;
 
-            // Remplir le modal d'édition
+            // Vérifier si c'est une transaction Bitcoin pure
+            if (transaction.isPureBitcoin || transaction.type === 'bitcoin_only') {
+                // Ouvrir la modal Bitcoin
+                openEditBitcoinTransactionModal(transaction);
+            } else {
+                // Ouvrir la modal normale
+                openEditNormalTransactionModal(transaction);
+            }
+        }
+
+        function openEditBitcoinTransactionModal(transaction) {
+            // Remplir les champs avec les données de la transaction
+            document.getElementById('editBitcoinTransactionType').value = transaction.bitcoinQuantity > 0 ? 'add' : 'remove';
+            document.getElementById('editBitcoinTransactionQuantity').value = Math.abs(transaction.bitcoinQuantity);
+            document.getElementById('editBitcoinTransactionDescription').value = transaction.name;
+            document.getElementById('editBitcoinTransactionDate').value = transaction.date;
+
+            // Remplir les champs optionnels
+            document.getElementById('editBitcoinFromAddress').value = transaction.fromAddress || '';
+            document.getElementById('editBitcoinToAddress').value = transaction.toAddress || '';
+            document.getElementById('editBitcoinTxId').value = transaction.transactionId || '';
+
+            // Stocker l'ID pour la sauvegarde
+            window.editingBitcoinTransactionId = currentViewingTransactionId;
+
+            showModal('editBitcoinTransactionModal');
+        }
+
+        function openEditNormalTransactionModal(transaction) {
+            // Remplir le modal d'édition normal
             document.getElementById('transactionModalTitle').textContent = 'Modifier la transaction';
             document.getElementById('transactionName').value = transaction.name;
             document.getElementById('transactionAmount').value = transaction.amount;
@@ -9771,7 +10541,7 @@
             document.getElementById('transactionRecurring').value = transaction.recurring ? 'yes' : 'no';
 
             if (transaction.category === 'bitcoin' && transaction.bitcoinQuantity) {
-                document.getElementById('bitcoinQuantity').value = transaction.bitcoinQuantity;
+                document.getElementById('bitcoinQuantity').value = Math.abs(transaction.bitcoinQuantity);
                 toggleBitcoinQuantity();
             }
 
@@ -9790,6 +10560,81 @@
             submitBtn.style.background = 'var(--revolut-orange)';
 
             showModal('transactionModal');
+        }
+
+        function saveBitcoinTransactionEdit() {
+            const transactionId = window.editingBitcoinTransactionId;
+            if (!transactionId) return;
+
+            const transaction = appData.transactions.find(t => t.id === transactionId);
+            if (!transaction) return;
+
+            const type = document.getElementById('editBitcoinTransactionType').value;
+            const quantity = parseFloat(document.getElementById('editBitcoinTransactionQuantity').value);
+            const description = document.getElementById('editBitcoinTransactionDescription').value;
+            const date = document.getElementById('editBitcoinTransactionDate').value;
+
+            const fromAddress = document.getElementById('editBitcoinFromAddress').value.trim();
+            const toAddress = document.getElementById('editBitcoinToAddress').value.trim();
+            const txId = document.getElementById('editBitcoinTxId').value.trim();
+
+            if (!quantity || quantity <= 0) {
+                alert('Veuillez entrer une quantité valide');
+                return;
+            }
+
+            if (!description.trim()) {
+                alert('Veuillez entrer une description');
+                return;
+            }
+
+            // Mettre à jour la transaction
+            const bitcoinQuantityToAdd = type === 'add' ? quantity : -quantity;
+
+            transaction.name = description;
+            transaction.bitcoinQuantity = bitcoinQuantityToAdd;
+            transaction.date = date;
+            transaction.fromAddress = fromAddress || null;
+            transaction.toAddress = toAddress || null;
+            transaction.transactionId = txId || null;
+
+            // Sauvegarder et mettre à jour
+            saveData();
+            updateBitcoinAssetFromTransactions();
+            if (document.querySelector('#bitcoin.active')) {
+                displayBitcoinPage();
+            }
+            updateDisplay();
+
+            // Fermer la modal et nettoyer
+            hideModal('editBitcoinTransactionModal');
+            window.editingBitcoinTransactionId = null;
+        }
+
+        function deleteBitcoinTransactionFromEdit() {
+            const transactionId = window.editingBitcoinTransactionId;
+            if (!transactionId) return;
+
+            const transaction = appData.transactions.find(t => t.id === transactionId);
+            if (!transaction) return;
+
+            if (confirm(`Êtes-vous sûr de vouloir supprimer cette transaction Bitcoin "${transaction.name}" ?`)) {
+                // Supprimer la transaction
+                appData.transactions = appData.transactions.filter(t => t.id !== transactionId);
+
+                // Sauvegarder et mettre à jour
+                saveData();
+                updateBitcoinAssetFromTransactions();
+                if (document.querySelector('#bitcoin.active')) {
+                    displayBitcoinPage();
+                }
+                updateDisplay();
+
+                // Fermer la modal et nettoyer
+                hideModal('editBitcoinTransactionModal');
+                window.editingBitcoinTransactionId = null;
+                currentViewingTransactionId = null;
+            }
         }
 
         // Fonction pour supprimer depuis les détails
@@ -10117,7 +10962,7 @@
                 .forEach(transaction => {
                     const isBitcoin = transaction.category === 'bitcoin';
                     const iconType = transaction.type === 'income' ? 'income' : (isBitcoin ? 'bitcoin' : 'expense');
-                    const icon = transaction.type === 'income' ? '+' : (isBitcoin ? '₿' : '-');
+                    const icon = getCategoryIcon(transaction);
                     const amountColor = transaction.type === 'income' ? 'var(--revolut-green)' : 'var(--text-primary)';
 
                     html += `
@@ -10447,7 +11292,7 @@
                             transactions: data.data.transactions || [],
                             assets: data.data.assets || [],
                             fireGoals: data.data.fireGoals || [],
-                            categories: data.data.categories || ['bitcoin', 'alimentation', 'transport', 'logement', 'loisirs', 'santé', 'shopping', 'divers'],
+                            categories: data.data.categories || ['Bitcoin', 'Alimentation', 'Transport','Carburant', 'Crédit', 'Loyer', 'Loisirs', 'Santé', 'Shopping', 'Divers', 'Investissement', 'Remboursement'],
                             settings: data.data.settings || {currentBalance: 0}
                         };
 
@@ -10665,6 +11510,20 @@
                     <strong>Récurrence :</strong>
                     <span id="detailRecurring"></span>
                 </div>
+                <div class="transaction-detail-item" id="fromAddressDetail" style="display: none;">
+                    <strong>Adresse de départ :</strong>
+                    <span id="detailFromAddress"></span>
+                </div>
+
+                <div class="transaction-detail-item" id="toAddressDetail" style="display: none;">
+                    <strong>Adresse de destination :</strong>
+                    <span id="detailToAddress"></span>
+                </div>
+
+                <div class="transaction-detail-item" id="txIdDetail" style="display: none;">
+                    <strong>ID de transaction :</strong>
+                    <span id="detailTxId"></span>
+                </div>
             </div>
 
             <div style="display: flex; gap: 12px; margin-top: 24px;">
@@ -10680,4 +11539,5 @@
     </div>
 
 </body>
+
 </html>
