@@ -1,0 +1,197 @@
+.calendar-container {
+  padding: 20px;
+  padding-bottom: 100px;
+  min-height: 100vh;
+}
+
+.calendar-header {
+  margin-bottom: 24px;
+}
+
+.calendar-header h1 {
+  font-size: 34px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.month-navigator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 0 8px;
+}
+
+.month-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: capitalize;
+}
+
+.nav-button {
+  background: rgba(28, 28, 30, 0.6);
+  border: none;
+  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  font-size: 24px;
+  color: #007AEF;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-button:hover {
+  background: rgba(28, 28, 30, 0.8);
+}
+
+.nav-button:active {
+  transform: scale(0.95);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.weekday-header {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8e8e93;
+  padding: 8px 0;
+}
+
+.calendar-day {
+  background: rgba(28, 28, 30, 0.4);
+  border-radius: 12px;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.calendar-day.empty {
+  background: transparent;
+}
+
+.calendar-day.has-transactions {
+  background: rgba(28, 28, 30, 0.8);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+}
+
+.day-number {
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.day-amount {
+  font-size: 10px;
+  color: #ff3b30;
+  font-weight: 600;
+}
+
+.chart-section {
+  background: rgba(28, 28, 30, 0.6);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.chart-container {
+  margin-top: 16px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+
+.transactions-section {
+  margin-bottom: 32px;
+}
+
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transaction-item {
+  background: rgba(28, 28, 30, 0.6);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform 0.2s;
+}
+
+.transaction-item:active {
+  transform: scale(0.98);
+}
+
+.transaction-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.transaction-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.transaction-name {
+  font-size: 17px;
+  font-weight: 500;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.transaction-details {
+  font-size: 13px;
+  color: #8e8e93;
+}
+
+.transaction-description {
+  font-size: 13px;
+  color: #8e8e93;
+  margin-top: 4px;
+}
+
+.transaction-amount {
+  font-size: 17px;
+  font-weight: 600;
+  color: #ff3b30;
+  flex-shrink: 0;
+}
+
+.empty-state {
+  background: rgba(28, 28, 30, 0.6);
+  border-radius: 16px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-state p {
+  font-size: 17px;
+  color: #8e8e93;
+}

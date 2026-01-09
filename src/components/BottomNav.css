@@ -1,0 +1,71 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(28, 28, 30, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 20px calc(8px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+}
+
+.nav-item {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: #8e8e93;
+  transition: all 0.2s;
+}
+
+.nav-item span {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.nav-item svg {
+  transition: all 0.2s;
+}
+
+.nav-item.active {
+  color: #007AEF;
+}
+
+.nav-item:not(.add-button):active {
+  transform: scale(0.95);
+}
+
+.nav-item.add-button {
+  position: relative;
+  padding: 0;
+  margin: 0 16px;
+}
+
+.add-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #007AEF 0%, #5856D6 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 122, 239, 0.4);
+  transition: all 0.2s;
+}
+
+.add-button:active .add-icon {
+  transform: scale(0.9);
+}
+
+.add-button:hover .add-icon {
+  box-shadow: 0 10px 25px rgba(0, 122, 239, 0.5);
+}
